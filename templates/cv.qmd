@@ -1,0 +1,527 @@
+---
+format: typst
+
+execute:
+  echo: false
+  eval: true
+
+knitr:
+  opts_chunk:
+    dev: null
+---
+
+```{r}
+#| label: libraries
+
+library(yaml)
+library(glue)
+library(purrr)
+```
+
+```{r}
+#| label: setup
+
+workspace_dir <- Sys.getenv("WORKSPACE_DIR", ".")
+meta <- read_yaml(file.path(workspace_dir, "data/meta.yml"))
+config <- read_yaml(file.path(workspace_dir, "data/config.yml"))
+version_file <- Sys.getenv("CV_VERSION", "versions/full.yml")
+version_config <- read_yaml(version_file)
+```
+
+```{r}
+#| label: preamble
+#| output: asis
+
+cat("```{=typst}\n")
+cat(
+  "#import \"@preview/neat-cv:0.4.0\": contact-info, cv, side, entry,",
+  "publications, social-links, item-with-level, item-pills\n"
+)
+cat("\n\n")
+
+glue(
+  "#set text(",
+  '  lang: "{config$lang}",',
+  '  region: "{config$region}",',
+  ")",
+  .sep = "\n"
+) |>
+  cat("\n\n")
+
+positions_str <- glue_collapse(double_quote(meta$positions), ", ")
+heading_font_str <- glue_collapse(double_quote(config$heading_font), ", ")
+body_font_str <- glue_collapse(double_quote(config$body_font), ", ")
+
+# nolint start: commented_code_linter
+glue(
+  "#show: cv.with(",
+  "  author: (",
+  '    firstname: "{meta$firstname}",',
+  '    lastname: "{meta$lastname}",',
+  "    position: ({positions_str}),",
+  '    email: "{meta$email}",',
+  "    address: [{meta$address}],",
+  '    phone: "{meta$phone}",',
+  '    website: "{meta$website}",',
+  '    twitter: "{meta$twitter}",',
+  '    mastodon: "{meta$mastodon}",',
+  '    matrix: "{meta$matrix}",',
+  '    github: "{meta$github}",',
+  '    gitlab: "{meta$gitlab}",',
+  '    linkedin: "{meta$linkedin}",',
+  '    researchgate: "{meta$researchgate}",',
+  '    scholar: "{meta$scholar}",',
+  '    orcid: "{meta$orcid}",',
+  #    Custom links require neat-cv v0.6.2
+  # '    custom-links: (',
+  # '      (',
+  # '        icon-name: "car", // Font Awesome icon name',
+  # '        label: "DeLorean Time Machine",',
+  # '        url: "https://en.wikipedia.org/wiki/DeLorean_time_machine",',
+  # '      ),',
+  # '      (',
+  # '        label: "Back to the Future",',
+  # '        url: "https://www.backtothefuture.com/",',
+  # '      ),',
+  # '    ),',
+  "  ),",
+  '  profile-picture: image("{config$profile_picture}"),',
+  '  accent-color: rgb("{config$accent_color}"),',
+  '  font-color: rgb("{config$font_color}"),',
+  '  header-color: rgb("{config$header_color}"),',
+  # '  date: "{config$date}",',
+  "  heading-font: ({heading_font_str}),",
+  "  body-font: ({body_font_str}),",
+  "  body-font-size: {config$body_font_size},",
+  '  paper-size: "{config$paper_size}",',
+  "  side-width: {config$side_width},",
+  '  gdpr: {ifelse(config$gdpr, "true", "false")},',
+  # '  footer: "{config$footer}",',
+  ")",
+  .sep = "\n"
+) |>
+  cat("\n\n")
+# nolint end: commented_code_linter
+
+glue(
+  "#side[",
+  "  = Contact",
+  "  #contact-info()",
+  "  #v(1fr)",
+  "  #social-links()",
+  "]",
+  .sep = "\n"
+) |>
+  cat("\n\n")
+
+cat("```\n")
+```
+
+```{r}
+#| label: sidebar
+#| output: asis
+
+sidebar <- read_yaml(file.path(workspace_dir, "data/sidebar.yml"))
+if (!is.null(sidebar)) {
+  cat("```{=typst}\n")
+  cat("#side[\n")
+  walk(sidebar, function(section) {
+    if (section$type == "new-page") {
+      cat("#colbreak()\n\n")
+    }
+
+    if (section$type == "align-bottom") {
+      cat("#v(1fr)\n\n")
+    }
+
+    if (!is.null(section$title)) {
+      cat(glue("= {section$title}\n\n"))
+    }
+
+    if (section$type == "contact") {
+      cat("#contact-info()\n\n")
+    }
+
+    if (section$type == "social") {
+      cat("#social-links()\n\n")
+    }
+
+    if (section$type == "text") {
+      cat(glue("{section$content}\n\n"))
+    }
+
+    if (section$type == "list") {
+      walk(section$items, function(item) {
+        glue("- {item}\n\n") |> cat()
+      })
+    }
+
+    if (section$type == "levels") {
+      walk(section$items, function(item) {
+        if (!is.null(item$subtitle)) {
+          item_str <- glue(
+            "#item-with-level(",
+            "\"{item$name}\", {item$level},",
+            "subtitle: \"{item$subtitle}\"",
+            ")"
+          )
+        } else {
+          item_str <- glue(
+            "#item-with-level(\"{item$name}\", {item$level})"
+          )
+        }
+        cat(item_str, "\n\n")
+      })
+    }
+
+    if (section$type == "pills") {
+      cat("#item-pills((\n")
+      walk(section$items, function(item) {
+        glue("  \"{item}\",") |> cat()
+      })
+      cat("))\n\n")
+    }
+  })
+  cat("]\n")
+  cat("```\n")
+}
+```
+
+```{r}
+#| label: load_section
+
+load_section <- function(filename, section_name) {
+  data <- read_yaml(file.path(workspace_dir, "data", filename))
+  entries_spec <- version_config$sections[[section_name]]$entries
+
+  if (is.null(entries_spec)) {
+    return(NULL)
+  }
+  if (identical(entries_spec, "all")) {
+    return(data)
+  }
+  if (length(entries_spec) == 0) {
+    return(NULL)
+  }
+
+  # Filter and reorder by ID
+  filtered_data <- Filter(function(entry) {
+    !is.null(entry$id) && entry$id %in% entries_spec
+  }, data)
+
+  ordered_data <- list()
+  for (id in entries_spec) {
+    for (entry in filtered_data) {
+      if (!is.null(entry$id) && entry$id == id) {
+        ordered_data[[length(ordered_data) + 1]] <- entry
+        break
+      }
+    }
+  }
+
+  if (length(ordered_data) == 0) {
+    return(NULL)
+  }
+
+  ordered_data
+}
+```
+
+```{r}
+#| label: generate_section
+
+generate_section <- function(section_data, section_name, title_field = "title",
+                             institution_field = "institution",
+                             location_field = "location", date_field = "date",
+                             from_field = "from", to_field = "to",
+                             desc_field = "details") {
+  cat("```{=typst}\n")
+  glue("= {section_name}\n\n") |> cat()
+
+  # Get first entry with time period
+  prefix_entry <- NULL
+  for (i in seq_along(section_data)) {
+    if (!is.null(section_data[[i]]$to)) {
+      prefix_entry <- section_data[[i]]
+      break
+    }
+  }
+
+  walk(section_data, function(entry) {
+    desc <- if (!is.null(entry[[desc_field]])) {
+      glue("{trimws(entry[[desc_field]])}")
+    } else {
+      ""
+    }
+
+    if (!is.null(entry[[date_field]])) {
+      date <- glue::glue("{entry[[date_field]]}")
+    } else if (!is.null(entry[[from_field]])) {
+      if (is.null(entry[[to_field]])) {
+        date <- glue::glue("{entry[[from_field]]}")
+      } else {
+        if (identical(entry, prefix_entry)) {
+          date <- glue(
+            "_From_ {entry[[from_field]]}\n\n_to_ {entry[[to_field]]}"
+          )
+        } else {
+          date <- glue("{entry[[from_field]]}\n\n{entry[[to_field]]}")
+        }
+      }
+    } else {
+      date <- NULL
+    }
+
+    title <- ifelse(
+      is.null(entry[[title_field]]),
+      "",
+      entry[[title_field]]
+    )
+    institution <- ifelse(
+      is.null(entry[[institution_field]]),
+      "",
+      entry[[institution_field]]
+    )
+    location <- ifelse(
+      is.null(entry[[location_field]]),
+      "",
+      entry[[location_field]]
+    )
+    date <- ifelse(is.null(date), "", date)
+
+    glue::glue(
+      "#entry(
+        title: [{title}],
+        institution: [{institution}],
+        location: [{location}],
+        date: [{date}],
+        [{desc}],
+      )"
+    ) |>
+      cat("\n\n")
+  })
+
+  cat("```\n")
+}
+```
+
+```{r}
+#| label: education
+#| output: asis
+
+education <- load_section("education.yml", "education")
+if (!is.null(education)) {
+  generate_section(
+    education,
+    "Education",
+    title_field = "degree",
+    institution_field = "institution",
+    location_field = "location",
+    desc_field = "details"
+  )
+}
+```
+
+```{r}
+#| label: experience
+#| output: asis
+
+experience <- load_section("experience.yml", "experience")
+if (!is.null(experience)) {
+  generate_section(
+    experience,
+    "Experience",
+    title_field = "position",
+    institution_field = "employer",
+    location_field = "location",
+    desc_field = "details"
+  )
+}
+```
+
+```{r}
+#| label: training
+#| output: asis
+
+training <- load_section("training.yml", "training")
+if (!is.null(training)) {
+  generate_section(
+    training,
+    "Training",
+    title_field = "course",
+    institution_field = "trainer",
+    location_field = "location",
+    desc_field = "details"
+  )
+}
+```
+
+```{r}
+#| label: extracurricular
+#| output: asis
+
+extracurricular <- load_section("extracurricular.yml", "extracurricular")
+if (!is.null(extracurricular)) {
+  generate_section(
+    extracurricular,
+    "Extracurricular Activity",
+    title_field = "position",
+    institution_field = "organisation",
+    location_field = "location",
+    desc_field = "details"
+  )
+}
+```
+
+```{r}
+#| label: skills
+#| output: asis
+
+skills <- load_section("skills.yml", "skills")
+if (!is.null(skills)) {
+  cat("```{=typst}\n")
+  cat("= Skills\n\n")
+
+  walk(skills, function(skill) {
+    cat(glue::glue("*{skill$category}:* {skill$items}\n\n"))
+  })
+
+  cat("```\n")
+}
+```
+
+```{r}
+#| label: awards
+#| output: asis
+
+awards <- load_section("awards.yml", "awards")
+if (!is.null(awards)) {
+  generate_section(
+    awards,
+    "Awards",
+    title_field = "title",
+    institution_field = "issuer",
+    location_field = "location",
+    date_field = "year",
+    desc_field = "description"
+  )
+}
+```
+
+```{r}
+#| label: presentations
+#| output: asis
+
+presentations <- load_section("presentations.yml", "presentations")
+if (!is.null(presentations)) {
+  generate_section(
+    presentations,
+    "Presentations",
+    title_field = "type",
+    institution_field = "event",
+    location_field = "location",
+    desc_field = "title"
+  )
+}
+```
+
+```{r}
+#| label: software
+#| output: asis
+
+software <- load_section("software.yml", "software")
+if (!is.null(software)) {
+  # Format URLs and add links
+  software <- map(software, function(entry) {
+    entry$url <- glue::glue(
+      "#set text(",
+      "features: (\"smcp\": 0)); ",
+      "#link(",
+      "\"{entry$url}\")",
+      "[#text(font: (",
+      "\"IBM Plex Mono\", \"Fira Mono\", \"DejaVu Sans Mono\", \"monospace\"",
+      "))",
+      "[{entry$url}]]"
+    )
+    entry
+  })
+
+  generate_section(
+    software,
+    "Software",
+    title_field = "name",
+    institution_field = "url",
+    location_field = "repository",
+    desc_field = "description"
+  )
+}
+```
+
+```{r}
+#| label: publications
+#| output: asis
+
+publications_raw <- read_yaml(file.path(workspace_dir, "data/publications.yml"))
+
+publications <- NULL
+if (!is.null(version_config$sections$publications)) {
+  pub_ids <- version_config$sections$publications$entries
+  if (length(pub_ids) == 1 && pub_ids == "all") {
+    # Include all publications and remove 'id' field
+    publications <- publications_raw
+    for (key in names(publications)) {
+      publications[[key]]$id <- NULL
+    }
+  } else {
+    # Filter by IDs
+    publications <- list()
+    for (key in names(publications_raw)) {
+      if (
+        !is.null(publications_raw[[key]]$id) &&
+          publications_raw[[key]]$id %in% pub_ids
+      ) {
+        publications[[key]] <- publications_raw[[key]]
+        # Remove the 'id' field as it's not part of neat-cv format
+        publications[[key]]$id <- NULL
+      }
+    }
+    if (length(publications) == 0) publications <- NULL
+  }
+} else {
+  # Include all publications and remove 'id' field
+  publications <- publications_raw
+  for (key in names(publications)) {
+    publications[[key]]$id <- NULL
+  }
+}
+
+if (!is.null(publications)) {
+  cat("```{=typst}\n")
+  # Write filtered publications to a temporary YAML file
+  temp_pub_file <- "_temp_publications.yml"
+  # Make sure author fields are always arrays
+  for (key in names(publications)) {
+    if (
+      !is.null(publications[[key]]$author) &&
+        is.list(publications[[key]]$author) &&
+        length(publications[[key]]$author) == 1
+    ) {
+      publications[[key]]$author <- list(publications[[key]]$author)
+    }
+  }
+  write_yaml(publications, temp_pub_file, column.major = FALSE)
+
+  cat("= Publications\n\n")
+
+  glue(
+    "#publications(
+      yaml(\"{temp_pub_file}\"),
+      highlight-authors: (\"L Zappia\", \"L Zappia*\")
+    )"
+  ) |>
+    cat("\n\n")
+
+  cat("#entry([_\\* indicates joint authorship_])\n\n")
+  cat("```\n")
+}
+```
