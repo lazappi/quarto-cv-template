@@ -6,13 +6,13 @@ sections:
     entries: all
   experience:
     entries: all
+  awards:
+    entries: all
   # training:
   #   entries: all
   # extracurricular:
   #   entries: all
   # skills:
-  #   entries: all
-  # awards:
   #   entries: all
   # presentations:
   #   entries: all

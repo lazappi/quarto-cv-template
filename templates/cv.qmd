@@ -334,6 +334,24 @@ if (!is.null(experience)) {
 ```
 
 ```{r}
+#| label: awards
+#| output: asis
+
+awards <- load_section("awards.yml", "awards")
+if (!is.null(awards)) {
+  generate_section(
+    awards,
+    "Awards",
+    title_field = "title",
+    institution_field = "issuer",
+    location_field = "location",
+    date_field = "year",
+    desc_field = "description"
+  )
+}
+```
+
+```{r}
 #| label: training
 #| output: asis
 
@@ -381,24 +399,6 @@ if (!is.null(skills)) {
   })
 
   cat("```\n")
-}
-```
-
-```{r}
-#| label: awards
-#| output: asis
-
-awards <- load_section("awards.yml", "awards")
-if (!is.null(awards)) {
-  generate_section(
-    awards,
-    "Awards",
-    title_field = "title",
-    institution_field = "issuer",
-    location_field = "location",
-    date_field = "year",
-    desc_field = "description"
-  )
 }
 ```
 

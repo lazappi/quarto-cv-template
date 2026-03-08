@@ -1,0 +1,20 @@
+- id: lifetime-achievement
+  title: Lifetime Achievement in Innovation
+  issuer: International Society of Inventors
+  location: Geneva, Switzerland
+  year: 1990
+  description: Recognized for a lifetime of inventive contributions to science and engineering.
+
+- id: best-demonstration
+  title: Best Experimental Demonstration
+  issuer: World Science Congress
+  location: London, UK
+  year: 1986
+  description: Awarded for the live demonstration of the DeLorean Time Machine prototype.
+
+- id: achievement-award
+  title: Hill Valley Science Achievement Award
+  issuer: Hill Valley Science Society
+  location: Hill Valley, CA, USA
+  year: 1986
+  description: Awarded for outstanding contributions to science and innovation in the community.
