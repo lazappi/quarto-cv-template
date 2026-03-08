@@ -1,0 +1,26 @@
+# Output files
+output/
+*.pdf
+*.html
+
+# Quarto generated files
+.quarto/
+*_files/
+*_cache/
+*.knit.md
+*.utf8.md
+
+# R
+.Rhistory
+.Rdata
+.RDataTmp
+.Ruserdata
+
+# MacOS
+.DS_Store
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
