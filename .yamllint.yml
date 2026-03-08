@@ -1,0 +1,39 @@
+extends: default
+
+rules:
+  line-length:
+    max: 120
+    level: warning
+
+  indentation:
+    spaces: consistent
+    indent-sequences: true
+    check-multi-line-strings: false
+
+  empty-lines:
+    max: 2
+    max-start: 0
+    max-end: 1
+
+  document-start:
+    present: false
+
+  comments:
+    min-spaces-from-content: 1
+
+
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+
+  truthy:
+    allowed-values: ['true', 'false']
+    check-keys: false
+
+  quoted-strings:
+    quote-type: double
+    required: only-when-needed
+
+ignore: |
+  _extensions/
+  output/
