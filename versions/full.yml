@@ -18,5 +18,5 @@ sections:
   #   entries: all
   # software:
   #   entries: all
-  # publications:
-  #   entries: all
+  publications:
+    entries: all
