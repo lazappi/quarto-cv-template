@@ -1,0 +1,19 @@
+firstname: Emmett
+lastname: Brown
+email: doc.brown@hillvalley.edu
+address: 1640 Riverside Drive\ Hill Valley\ California, USA
+phone: (555) 121-1955
+positions:
+  - Inventor
+  - Theoretical Physicist
+website: https://docbrownlabs.com
+twitter: docbrown1955
+mastodon: "@docbrown@sciences.social"
+# matrix: "@you:matrix.org"
+# github: yourprofile
+# gitlab: yourprofile
+linkedin: emmett-brown-hv
+# researchgate: yourprofile
+# scholar: yourprofile
+# orcid: 0000-0000-0000-0000
+profile_picture: images/profile.png

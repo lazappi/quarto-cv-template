@@ -1,0 +1,87 @@
+- title: About me
+  type: text
+  content: |
+    Visionary inventor and theoretical physicist, renowned for pioneering work
+    in time travel, flux capacitor technology, and unconventional scientific
+    research.
+
+    Adept at creative problem-solving, interdisciplinary collaboration, and
+    pushing the boundaries of known science.
+
+- title: Interests
+  type: list
+  items:
+    - Temporal Mechanics
+    - Quantum Physics
+    - Invention & Engineering
+    - DeLorean Restoration
+    - Science Education
+
+- title: Contact
+  type: contact
+
+- title: Personal
+  type: text
+  content: |
+    Nationality: American
+
+    Date of birth: 22.03.1920
+
+# Align following sections to bottom of sidebar
+- type: align-bottom
+
+- type: social
+
+# Start a new page, resets alignment
+- type: new-page
+
+- title: Languages
+  type: levels
+  items:
+    - name: English
+      level: 5
+      subtitle: Native
+    - name: German
+      level: 3
+      subtitle: Intermediate
+    - name: French
+      level: 2
+      subtitle: Basic
+
+- title: Physics & Engineering
+  type: levels
+  items:
+    - name: Temporal Mechanics
+      level: 5
+    - name: Quantum Theory
+      level: 4
+    - name: Nuclear Physics
+      level: 4
+    - name: Mechanical Engineering
+      level: 5
+    - name: Electrical Engineering
+      level: 4
+    - name: Automotive Restoration
+      level: 3.5
+
+- title: Technology
+  type: levels
+  items:
+    - name: Flux Capacitor Design
+      level: 5
+    - name: Time Machine Construction
+      level: 5
+    - name: Robotics
+      level: 3
+    - name: Computer Programming
+      level: 3
+
+- title: Other Skills
+  type: pills
+  items:
+    - Creative Problem Solving
+    - Scientific Communication
+    - Workshop Safety
+    - Mentoring Young Scientists
+    - Improvisation
+    - Experimental Design

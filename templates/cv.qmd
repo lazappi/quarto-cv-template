@@ -85,7 +85,7 @@ glue(
   # '      ),',
   # '    ),',
   "  ),",
-  '  profile-picture: image("{config$profile_picture}"),',
+  '  profile-picture: image("{meta$profile_picture}"),',
   '  accent-color: rgb("{config$accent_color}"),',
   '  font-color: rgb("{config$font_color}"),',
   '  header-color: rgb("{config$header_color}"),',
@@ -191,17 +191,17 @@ if (!is.null(sidebar)) {
 #| label: load_section
 
 load_section <- function(filename, section_name) {
-  data <- read_yaml(file.path(workspace_dir, "data", filename))
   entries_spec <- version_config$sections[[section_name]]$entries
 
-  if (is.null(entries_spec)) {
+  if (is.null(entries_spec) || length(entries_spec) == 0) {
     return(NULL)
   }
+
+  data_path <- file.path(workspace_dir, "data", filename)
+  data <- read_yaml(file.path(workspace_dir, "data", filename))
+
   if (identical(entries_spec, "all")) {
     return(data)
-  }
-  if (length(entries_spec) == 0) {
-    return(NULL)
   }
 
   # Filter and reorder by ID
@@ -461,10 +461,14 @@ if (!is.null(software)) {
 #| label: publications
 #| output: asis
 
-publications_raw <- read_yaml(file.path(workspace_dir, "data/publications.yml"))
-
+publications_raw_path <- file.path(
+  workspace_dir, "data", "sections", "publications.yml"
+)
 publications <- NULL
+
 if (!is.null(version_config$sections$publications)) {
+  publications_raw <- read_yaml(publications_raw_path)
+
   pub_ids <- version_config$sections$publications$entries
   if (length(pub_ids) == 1 && pub_ids == "all") {
     # Include all publications and remove 'id' field
@@ -487,19 +491,13 @@ if (!is.null(version_config$sections$publications)) {
     }
     if (length(publications) == 0) publications <- NULL
   }
-} else {
-  # Include all publications and remove 'id' field
-  publications <- publications_raw
-  for (key in names(publications)) {
-    publications[[key]]$id <- NULL
-  }
 }
 
 if (!is.null(publications)) {
   cat("```{=typst}\n")
   # Write filtered publications to a temporary YAML file
   temp_pub_file <- "_temp_publications.yml"
-  # Make sure author fields are always arrays
+  # Make sure author fields are always lists
   for (key in names(publications)) {
     if (
       !is.null(publications[[key]]$author) &&
@@ -516,7 +514,7 @@ if (!is.null(publications)) {
   glue(
     "#publications(
       yaml(\"{temp_pub_file}\"),
-      highlight-authors: (\"L Zappia\", \"L Zappia*\")
+      highlight-authors: (\"Brown, Emmett\", \"Brown, Emmett Lathrop\")
     )"
   ) |>
     cat("\n\n")
