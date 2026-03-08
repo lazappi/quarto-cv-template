@@ -4,8 +4,8 @@ description: Full CV with all sections and entries
 sections:
   education:
     entries: all
-  # experience:
-  #   entries: all
+  experience:
+    entries: all
   # training:
   #   entries: all
   # extracurricular:

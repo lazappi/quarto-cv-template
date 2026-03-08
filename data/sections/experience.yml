@@ -1,0 +1,51 @@
+- id: inventor
+  position: Independent Inventor & Research Scientist
+  employer: Hill Valley Laboratory
+  location: Hill Valley, CA, USA
+  from: 1955
+  to: Now
+  details: |
+    - Invented the Flux Capacitor, enabling practical time travel.
+    - Designed and constructed the DeLorean Time Machine and related temporal devices.
+    - Conducted groundbreaking experiments in temporal mechanics and quantum theory.
+    - Provided scientific mentorship to aspiring inventors and students.
+    - Published theoretical work on paradoxes, causality, and energy transfer.
+
+- id: educator
+  position: Science Educator & Public Speaker
+  employer: Various Institutions
+  location: USA & Europe
+  from: 1960
+  to: Now
+  details: |
+    - Delivered lectures and demonstrations on physics, engineering, and the
+      ethics of scientific discovery.
+    - Organized science fairs and educational outreach for young students.
+
+- id: visiting-professor
+  position: "Visiting Professor: Temporal Physics"
+  employer: Hill Valley University
+  location: Hill Valley, CA, USA
+  date: 1985
+  details: |
+    - Developed and taught courses on time travel theory and paradox management.
+    - Supervised student projects on experimental physics and invention.
+
+- id: adjunct-lecturer
+  position: "Adjunct Lecturer: Quantum Theory and Paradoxes"
+  employer: California Institute of Technology
+  location: Pasadena, CA, USA
+  from: 1978
+  to: 1984
+  details: |
+    - Lectured on advanced quantum mechanics and paradoxes in theoretical physics.
+    - Organized interdisciplinary seminars on causality and time.
+
+- id: research-fellow
+  position: "Research Fellow: High-Energy Particle Physics"
+  employer: MIT
+  location: Cambridge, MA, USA
+  from: 1952
+  to: 1955
+  details: |
+    - Conducted research on high-voltage circuits and early particle acceleration experiments.
