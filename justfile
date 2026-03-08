@@ -119,7 +119,7 @@ check:
     @if command -v pre-commit >/dev/null 2>&1; then \
         pre-commit run --all-files; \
     else \
-        echo "Error: pre-commit not found" \
+        echo "Error: pre-commit not found"; \
         exit 1; \
     fi
 
@@ -129,10 +129,10 @@ install-hooks:
     @echo "Installing pre-commit hooks..."
     @if command -v pre-commit >/dev/null 2>&1; then \
         pre-commit install; \
-        echo "✓ Pre-commit hooks installed" \
+        echo "✓ Pre-commit hooks installed"; \
     else \
-        echo "Error: pre-commit not found" \
-        exit 1 \
+        echo "Error: pre-commit not found"; \
+        exit 1; \
     fi
 
 # Show help for all recipes
