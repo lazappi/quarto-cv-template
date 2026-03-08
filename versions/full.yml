@@ -1,0 +1,22 @@
+name: Complete CV
+description: Full CV with all sections and entries
+
+sections:
+  education:
+    entries: all
+  experience:
+    entries: all
+  training:
+    entries: all
+  extracurricular:
+    entries: all
+  skills:
+    entries: all
+  awards:
+    entries: all
+  presentations:
+    entries: all
+  software:
+    entries: all
+  publications:
+    entries: all
