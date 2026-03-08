@@ -9,6 +9,7 @@ set -e
 VERSION="${1:-full}"
 WORKSPACE_DIR="$(git rev-parse --show-toplevel)"
 
+echo "Workspace directory: $WORKSPACE_DIR"
 if [ ! -f "$WORKSPACE_DIR/versions/$VERSION.yml" ]; then
     echo "Error: Version file not found: versions/$VERSION.yml"
     exit 1
@@ -20,6 +21,7 @@ cd "$WORKSPACE_DIR"
 
 OUTPUT_DIR="$WORKSPACE_DIR/output/$VERSION"
 mkdir -p "$OUTPUT_DIR"
+echo "Output directory: $OUTPUT_DIR"
 
 export CV_VERSION="$WORKSPACE_DIR/versions/$VERSION.yml"
 export WORKSPACE_DIR="$WORKSPACE_DIR"

@@ -1,0 +1,15 @@
+- id: phd
+  degree: PhD in Physics
+  institution: California Institute of Technology
+  location: Pasadena, CA, USA
+  date: 1951
+  details: |
+    - Dissertation: _"Theoretical Approaches to Temporal Displacement and Causality"_.
+
+- id: bsc
+  degree: BSc in Engineering
+  institution: MIT
+  location: Cambridge, MA, USA
+  date: 1943
+  details: |
+    - Thesis: _"Practical Applications of High-Voltage Circuits in Experimental Physics"_.

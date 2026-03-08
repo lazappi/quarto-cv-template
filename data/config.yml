@@ -1,0 +1,16 @@
+lang: en
+region: US
+# date: Month, Year
+accent_color: "#4682b4"
+font_color: "#333333"
+header_color: "#35414d"
+heading_font:
+  - Fira Sans
+body_font:
+  - Noto Sans
+  - Roboto
+body_font_size: 10.5pt
+paper_size: a4
+side_width: 4cm
+gdpr: false
+# footer: Your footer

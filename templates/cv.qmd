@@ -34,10 +34,12 @@ version_config <- read_yaml(version_file)
 
 cat("```{=typst}\n")
 cat(
-  "#import \"@preview/neat-cv:0.4.0\": contact-info, cv, side, entry,",
-  "publications, social-links, item-with-level, item-pills\n"
+  "#import \"@preview/neat-cv:0.4.0\": (",
+  "  contact-info, cv, email-link, entry, item-pills, item-with-level,",
+  "  publications, side, social-links,",
+  ")\n",
+  sep = "\n"
 )
-cat("\n\n")
 
 glue(
   "#set text(",
@@ -65,13 +67,13 @@ glue(
   '    website: "{meta$website}",',
   '    twitter: "{meta$twitter}",',
   '    mastodon: "{meta$mastodon}",',
-  '    matrix: "{meta$matrix}",',
-  '    github: "{meta$github}",',
-  '    gitlab: "{meta$gitlab}",',
+  # '    matrix: "{meta$matrix}",',
+  # '    github: "{meta$github}",',
+  # '    gitlab: "{meta$gitlab}",',
   '    linkedin: "{meta$linkedin}",',
-  '    researchgate: "{meta$researchgate}",',
-  '    scholar: "{meta$scholar}",',
-  '    orcid: "{meta$orcid}",',
+  # '    researchgate: "{meta$researchgate}",',
+  # '    scholar: "{meta$scholar}",',
+  # '    orcid: "{meta$orcid}",',
   #    Custom links require neat-cv v0.6.2
   # '    custom-links: (',
   # '      (',
@@ -103,17 +105,6 @@ glue(
   cat("\n\n")
 # nolint end: commented_code_linter
 
-glue(
-  "#side[",
-  "  = Contact",
-  "  #contact-info()",
-  "  #v(1fr)",
-  "  #social-links()",
-  "]",
-  .sep = "\n"
-) |>
-  cat("\n\n")
-
 cat("```\n")
 ```
 
@@ -127,63 +118,66 @@ if (!is.null(sidebar)) {
   cat("#side[\n")
   walk(sidebar, function(section) {
     if (section$type == "new-page") {
-      cat("#colbreak()\n\n")
+      cat("  #colbreak()\n\n")
     }
 
     if (section$type == "align-bottom") {
-      cat("#v(1fr)\n\n")
+      cat("  #v(1fr)\n\n")
     }
 
     if (!is.null(section$title)) {
-      cat(glue("= {section$title}\n\n"))
+      glue("  = {section$title}") |> cat("\n")
     }
 
     if (section$type == "contact") {
-      cat("#contact-info()\n\n")
+      cat("  #contact-info()\n\n")
     }
 
     if (section$type == "social") {
-      cat("#social-links()\n\n")
+      cat("  #social-links()\n\n")
     }
 
     if (section$type == "text") {
-      cat(glue("{section$content}\n\n"))
+      glue("  {section$content}") |> cat("\n\n")
     }
 
     if (section$type == "list") {
       walk(section$items, function(item) {
-        glue("- {item}\n\n") |> cat()
+        glue("  - {item}") |> cat("\n")
       })
+      cat("\n\n")
     }
 
     if (section$type == "levels") {
       walk(section$items, function(item) {
         if (!is.null(item$subtitle)) {
           item_str <- glue(
-            "#item-with-level(",
+            "  #item-with-level(",
             "\"{item$name}\", {item$level},",
             "subtitle: \"{item$subtitle}\"",
             ")"
           )
         } else {
           item_str <- glue(
-            "#item-with-level(\"{item$name}\", {item$level})"
+            "  #item-with-level(\"{item$name}\", {item$level})"
           )
         }
-        cat(item_str, "\n\n")
+        cat(item_str, "\n")
       })
+      cat("\n")
     }
 
     if (section$type == "pills") {
-      cat("#item-pills((\n")
+      cat("  #item-pills((\n")
       walk(section$items, function(item) {
-        glue("  \"{item}\",") |> cat()
+        glue("    \"{item}\",") |> cat("\n")
       })
-      cat("))\n\n")
+      cat("  ))\n")
     }
   })
-  cat("]\n")
-  cat("```\n")
+
+  cat("]\n\n")
+  cat("```\n\n")
 }
 ```
 
@@ -197,8 +191,8 @@ load_section <- function(filename, section_name) {
     return(NULL)
   }
 
-  data_path <- file.path(workspace_dir, "data", filename)
-  data <- read_yaml(file.path(workspace_dir, "data", filename))
+  data_path <- file.path(workspace_dir, "data", "sections", filename)
+  data <- read_yaml(data_path)
 
   if (identical(entries_spec, "all")) {
     return(data)
@@ -235,8 +229,8 @@ generate_section <- function(section_data, section_name, title_field = "title",
                              location_field = "location", date_field = "date",
                              from_field = "from", to_field = "to",
                              desc_field = "details") {
-  cat("```{=typst}\n")
-  glue("= {section_name}\n\n") |> cat()
+  cat("```{=typst}\n\n")
+  glue("= {section_name}\n\n\n") |> cat()
 
   # Get first entry with time period
   prefix_entry <- NULL

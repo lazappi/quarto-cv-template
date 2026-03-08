@@ -2,8 +2,8 @@ name: Complete CV
 description: Full CV with all sections and entries
 
 sections:
-  # education:
-  #   entries: all
+  education:
+    entries: all
   # experience:
   #   entries: all
   # training:
