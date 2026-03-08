@@ -1,0 +1,67 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+        name: Validate YAML syntax
+        exclude: ^_extensions/
+      - id: check-merge-conflict
+        name: Check for merge conflicts
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.38.0
+    hooks:
+      - id: yamllint
+        name: Lint YAML files
+        args: ['-c', '.yamllint.yml']
+        files: ^(data/|versions/).*\.ya?ml$
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.2
+    hooks:
+      - id: codespell
+        name: Check spelling
+        args:
+          - --ignore-words=.codespell-ignore
+          - --skip=*.pdf,output/*,*.typ,.git
+          - --check-filenames
+          - --check-hidden
+        exclude: ^(\.codespell-ignore|\.pre-commit-config\.yaml|output/|_extensions/)
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.5
+    hooks:
+      - id: ruff
+        name: Sort imports and lint Python files
+        args: [--select, I, --fix]
+      - id: ruff-format
+        name: Format Python code style
+
+  - repo: local
+    hooks:
+      - id: lintr
+        name: Lint R code
+        entry: Rscript -e "lintr::lint(commandArgs(TRUE), cache=FALSE)"
+        language: system
+        files: '\.(qmd|R)$'
+        exclude: ^output/
+
+      - id: styler
+        name: Style R code
+        entry: Rscript -e "styler::style_file(commandArgs(TRUE), strict=TRUE)"
+        language: system
+        files: '\.(qmd|R)$'
+        exclude: ^output/
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: end-of-file-fixer
+        name: Fix end of files
+        exclude: ^(output/|\.pdf$)
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+        args: ['--markdown-linebreak-ext=md']
+        exclude: ^(output/|\.pdf$)
+      - id: mixed-line-ending
+        name: Check line endings
+        args: ['--fix=lf']
