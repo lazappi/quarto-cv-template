@@ -16,11 +16,11 @@ sections:
     institution_field: employer
     desc_field: details
     entries: all
-  # - name: Awards
-  #   data: awards.yml
-  #   institution_field: issuer
-  #   date_field: year
-  #   entries: all
+  - name: Grants and Awards
+    data: awards.yml
+    institution_field: issuer
+    date_field: year
+    entries: all
   # - name: Training
   #   data: training.yml
   #   title_field: course
