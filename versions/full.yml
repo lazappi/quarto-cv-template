@@ -5,7 +5,13 @@ sections:
     desc_field: details
     entries: all
   - name: Professional Experience
-    data: experience.yml
+    data: professional.yml
+    title_field: position
+    institution_field: employer
+    desc_field: details
+    entries: all
+  - name: Academic Experience
+    data: academic.yml
     title_field: position
     institution_field: employer
     desc_field: details
