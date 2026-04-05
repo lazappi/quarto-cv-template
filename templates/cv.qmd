@@ -410,12 +410,27 @@ generate_publications <- function(section_config) {
 ```
 
 ```{r}
+#| label: generate_new_page
+
+generate_new_page <- function() {
+  cat("```{=typst}\n")
+  cat("#colbreak()\n\n")
+  cat("```\n\n")
+}
+```
+
+```{r}
 #| label: generate_section
 
 generate_section <- function(section_config) {
   if (!is.null(section_config$type) && section_config$type == "publications") {
     generate_publications(section_config)
-    return()
+    return(invisible())
+  }
+
+  if (!is.null(section_config$type) && section_config$type == "new-page") {
+    generate_new_page()
+    return(invisible())
   }
 
   section_data <- load_section_items(
@@ -447,7 +462,9 @@ generate_section <- function(section_config) {
 #| results: hide
 
 sections <- version_config$sections
-names(sections) <- map_chr(sections, "name")
+names(sections) <- map_chr(
+  seq_along(sections), \(.i) sections[[.i]]$name %||% paste0("UNNNAMED", .i)
+)
 src_list <- purrr::map(names(sections), function(.section_name) {
   src <- c(
     "```{r section-<<.section_name>>, results='asis'}",

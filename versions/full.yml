@@ -21,6 +21,7 @@ sections:
     institution_field: issuer
     date_field: year
     entries: all
+  - type: new-page
   - name: Talks
     data: talks.yml
     institution_field: event
