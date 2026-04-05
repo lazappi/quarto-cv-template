@@ -1,22 +1,47 @@
-name: Complete CV
-description: Full CV with all sections and entries
-
 sections:
-  education:
+  - name: Education
+    data: education.yml
+    title_field: degree
+    desc_field: details
     entries: all
-  experience:
+  - name: Professional Experience
+    data: experience.yml
+    title_field: position
+    institution_field: employer
+    desc_field: details
     entries: all
-  awards:
-    entries: all
-  # training:
+  # - name: Awards
+  #   data: awards.yml
+  #   institution_field: issuer
+  #   date_field: year
   #   entries: all
-  # extracurricular:
+  # - name: Training
+  #   data: training.yml
+  #   title_field: course
+  #   institution_field: trainer
+  #   desc_field: details
   #   entries: all
-  # skills:
+  # - name: Extracurricular
+  #   data: extracurricular.yml
+  #   title_field: position
+  #   institution_field: organisation
+  #   desc_field: details
   #   entries: all
-  # presentations:
+  # # - name: Skills
+  # #   data: skills.yml
+  # - name: Presentations
+  #   data: presentations.yml
+  #   title_field: type
+  #   institution_field: event
+  #   desc_field: title
+  # - name: Software
+  #   data: software.yml
+  #   title_field: name
+  #   institution_field: url
+  #   location_field: repository
   #   entries: all
-  # software:
-  #   entries: all
-  publications:
-    entries: all
+  # - name: Publications
+  #   type: publications
+  #   data: publications.yml
+  #   highlight_authors: ["Brown, Emmett", "Brown, Emmett Lathrop"]
+  #   joint_authorship: NULL # Symbol to indicate joint authorship, e.g. "\\*"

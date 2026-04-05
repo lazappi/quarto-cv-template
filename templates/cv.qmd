@@ -182,29 +182,28 @@ if (!is.null(sidebar)) {
 ```
 
 ```{r}
-#| label: load_section
+#| label: load_section_items
 
-load_section <- function(filename, section_name) {
-  entries_spec <- version_config$sections[[section_name]]$entries
-
-  if (is.null(entries_spec) || length(entries_spec) == 0) {
+load_section_items <- function(filename, entries, url_fields = NULL) {
+  if (is.null(entries) || length(entries) == 0) {
     return(NULL)
   }
 
   data_path <- file.path(workspace_dir, "data", "sections", filename)
   data <- read_yaml(data_path)
 
-  if (identical(entries_spec, "all")) {
+  if (identical(entries, "all")) {
+    data <- format_urls(data, url_fields)
     return(data)
   }
 
   # Filter and reorder by ID
   filtered_data <- Filter(function(entry) {
-    !is.null(entry$id) && entry$id %in% entries_spec
+    !is.null(entry$id) && entry$id %in% entries
   }, data)
 
   ordered_data <- list()
-  for (id in entries_spec) {
+  for (id in entries) {
     for (entry in filtered_data) {
       if (!is.null(entry$id) && entry$id == id) {
         ordered_data[[length(ordered_data) + 1]] <- entry
@@ -217,18 +216,56 @@ load_section <- function(filename, section_name) {
     return(NULL)
   }
 
-  ordered_data
+  format_urls(ordered_data, url_fields)
 }
 ```
 
 ```{r}
-#| label: generate_section
+#| label: format_urls
 
-generate_section <- function(section_data, section_name, title_field = "title",
-                             institution_field = "institution",
-                             location_field = "location", date_field = "date",
-                             from_field = "from", to_field = "to",
-                             desc_field = "details") {
+format_urls <- function(items, url_fields) {
+  if (is.null(items) || length(items) == 0 || is.null(url_fields) || length(url_fields) == 0) {
+    return(items)
+  }
+
+  map(items, function(item) {
+    for (field in url_fields) {
+      if (!is.null(item[[field]])) {
+        item[[field]] <- glue::glue(
+          "#set text(",
+          "features: (\"smcp\": 0)); ",
+          "#link(",
+          "\"{item[[field]]}\")",
+          "[#text(font: (",
+          "\"IBM Plex Mono\", \"Fira Mono\", \"DejaVu Sans Mono\", \"monospace\"",
+          "))",
+          "[{item[[field]]}]]"
+        )
+      }
+    }
+    item
+  })
+}
+```
+
+```{r}
+#| label: generate_section_content
+
+generate_section_content <- function(section_data, section_name,
+                                     title_field = NULL,
+                                     institution_field = NULL,
+                                     location_field = NULL,
+                                     date_field = NULL,
+                                     from_field = NULL, to_field = NULL,
+                                     desc_field = NULL) {
+  title_field <- title_field %||% "title"
+  institution_field <- institution_field %||% "institution"
+  location_field <- location_field %||% "location"
+  date_field <- date_field %||% "date"
+  from_field <- from_field %||% "from"
+  to_field <- to_field %||% "to"
+  desc_field <- desc_field %||% "description"
+
   cat("```{=typst}\n\n")
   glue("= {section_name}\n\n\n") |> cat()
 
@@ -300,170 +337,17 @@ generate_section <- function(section_data, section_name, title_field = "title",
 ```
 
 ```{r}
-#| label: education
-#| output: asis
+#| label: generate_publications
 
-education <- load_section("education.yml", "education")
-if (!is.null(education)) {
-  generate_section(
-    education,
-    "Education",
-    title_field = "degree",
-    institution_field = "institution",
-    location_field = "location",
-    desc_field = "details"
+generate_publications <- function(section_config) {
+  publications_raw_path <- file.path(
+    workspace_dir, "data", "sections", section_config$data
   )
-}
-```
+  publications <- NULL
 
-```{r}
-#| label: experience
-#| output: asis
-
-experience <- load_section("experience.yml", "experience")
-if (!is.null(experience)) {
-  generate_section(
-    experience,
-    "Experience",
-    title_field = "position",
-    institution_field = "employer",
-    location_field = "location",
-    desc_field = "details"
-  )
-}
-```
-
-```{r}
-#| label: awards
-#| output: asis
-
-awards <- load_section("awards.yml", "awards")
-if (!is.null(awards)) {
-  generate_section(
-    awards,
-    "Awards",
-    title_field = "title",
-    institution_field = "issuer",
-    location_field = "location",
-    date_field = "year",
-    desc_field = "description"
-  )
-}
-```
-
-```{r}
-#| label: training
-#| output: asis
-
-training <- load_section("training.yml", "training")
-if (!is.null(training)) {
-  generate_section(
-    training,
-    "Training",
-    title_field = "course",
-    institution_field = "trainer",
-    location_field = "location",
-    desc_field = "details"
-  )
-}
-```
-
-```{r}
-#| label: extracurricular
-#| output: asis
-
-extracurricular <- load_section("extracurricular.yml", "extracurricular")
-if (!is.null(extracurricular)) {
-  generate_section(
-    extracurricular,
-    "Extracurricular Activity",
-    title_field = "position",
-    institution_field = "organisation",
-    location_field = "location",
-    desc_field = "details"
-  )
-}
-```
-
-```{r}
-#| label: skills
-#| output: asis
-
-skills <- load_section("skills.yml", "skills")
-if (!is.null(skills)) {
-  cat("```{=typst}\n")
-  cat("= Skills\n\n")
-
-  walk(skills, function(skill) {
-    cat(glue::glue("*{skill$category}:* {skill$items}\n\n"))
-  })
-
-  cat("```\n")
-}
-```
-
-```{r}
-#| label: presentations
-#| output: asis
-
-presentations <- load_section("presentations.yml", "presentations")
-if (!is.null(presentations)) {
-  generate_section(
-    presentations,
-    "Presentations",
-    title_field = "type",
-    institution_field = "event",
-    location_field = "location",
-    desc_field = "title"
-  )
-}
-```
-
-```{r}
-#| label: software
-#| output: asis
-
-software <- load_section("software.yml", "software")
-if (!is.null(software)) {
-  # Format URLs and add links
-  software <- map(software, function(entry) {
-    entry$url <- glue::glue(
-      "#set text(",
-      "features: (\"smcp\": 0)); ",
-      "#link(",
-      "\"{entry$url}\")",
-      "[#text(font: (",
-      "\"IBM Plex Mono\", \"Fira Mono\", \"DejaVu Sans Mono\", \"monospace\"",
-      "))",
-      "[{entry$url}]]"
-    )
-    entry
-  })
-
-  generate_section(
-    software,
-    "Software",
-    title_field = "name",
-    institution_field = "url",
-    location_field = "repository",
-    desc_field = "description"
-  )
-}
-```
-
-```{r}
-#| label: publications
-#| output: asis
-
-publications_raw_path <- file.path(
-  workspace_dir, "data", "sections", "publications.yml"
-)
-publications <- NULL
-
-if (!is.null(version_config$sections$publications)) {
   publications_raw <- read_yaml(publications_raw_path)
 
-  pub_ids <- version_config$sections$publications$entries
+  pub_ids <- section_config$entries
   if (length(pub_ids) == 1 && pub_ids == "all") {
     # Include all publications and remove 'id' field
     publications <- publications_raw
@@ -485,35 +369,96 @@ if (!is.null(version_config$sections$publications)) {
     }
     if (length(publications) == 0) publications <- NULL
   }
-}
 
-if (!is.null(publications)) {
-  cat("```{=typst}\n")
-  # Write filtered publications to a temporary YAML file
-  temp_pub_file <- "_temp_publications.yml"
-  # Make sure author fields are always lists
-  for (key in names(publications)) {
-    if (
-      !is.null(publications[[key]]$author) &&
-        is.list(publications[[key]]$author) &&
-        length(publications[[key]]$author) == 1
-    ) {
-      publications[[key]]$author <- list(publications[[key]]$author)
+  if (!is.null(publications)) {
+    cat("```{=typst}\n")
+    # Write filtered publications to a temporary YAML file
+    temp_pub_file <- "_temp_publications.yml"
+    # Make sure author fields are always lists
+    for (key in names(publications)) {
+      if (
+        !is.null(publications[[key]]$author) &&
+          is.list(publications[[key]]$author) &&
+          length(publications[[key]]$author) == 1
+      ) {
+        publications[[key]]$author <- list(publications[[key]]$author)
+      }
     }
+    write_yaml(publications, temp_pub_file, column.major = FALSE)
+
+    glue("= {section_config$name}\n\n\n") |> cat()
+
+    highlight_authors <- section_config$highlight_authors %||% c()
+    highlight_authors_str <- glue_collapse(
+      double_quote(highlight_authors), ", "
+    )
+    glue(
+      "#publications(
+        yaml(\"{temp_pub_file}\"),
+        highlight-authors: ({highlight_authors_str})
+      )"
+    ) |>
+      cat("\n\n")
+
+    if (!is.null(section_config$joint_authorship)) {
+      cat("#entry([_{section_config$joint_authorship} indicates joint authorship_])\n\n")
+    }
+
+    cat("```\n")
   }
-  write_yaml(publications, temp_pub_file, column.major = FALSE)
-
-  cat("= Publications\n\n")
-
-  glue(
-    "#publications(
-      yaml(\"{temp_pub_file}\"),
-      highlight-authors: (\"Brown, Emmett\", \"Brown, Emmett Lathrop\")
-    )"
-  ) |>
-    cat("\n\n")
-
-  cat("#entry([_\\* indicates joint authorship_])\n\n")
-  cat("```\n")
 }
 ```
+
+```{r}
+#| label: generate_section
+
+generate_section <- function(section_config) {
+  if (!is.null(section_config$type) && section_config$type == "publications") {
+    generate_publications(section_config)
+    return()
+  }
+
+  section_data <- load_section_items(
+    filename = section_config$data,
+    entries = section_config$entries,
+    url_fields = section_config$url_fields
+  )
+
+  if (is.null(section_data)) {
+    return()
+  }
+
+  generate_section_content(
+    section_data = section_data,
+    section_name = section_config$name,
+    title_field = section_config$title_field,
+    institution_field = section_config$institution_field,
+    location_field = section_config$location_field,
+    date_field = section_config$date_field,
+    from_field = section_config$from_field,
+    to_field = section_config$to_field,
+    desc_field = section_config$desc_field
+  )
+}
+```
+
+```{r}
+#| label: generate-section-chunks
+#| results: hide
+
+sections <- version_config$sections
+names(sections) <- map_chr(sections, "name")
+src_list <- purrr::map(names(sections), function(.section_name) {
+  src <- c(
+    "```{r section-<<.section_name>>, results='asis'}",
+    "generate_section(sections[['<<.section_name>>']])",
+    "```",
+    ""
+  )
+
+  knitr::knit_expand(text = src, delim = c("<<", ">>"))
+})
+out <- knitr::knit_child(text = unlist(src_list), options = list(cache = FALSE))
+```
+
+`r out`
