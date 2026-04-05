@@ -21,6 +21,11 @@ sections:
     institution_field: issuer
     date_field: year
     entries: all
+  - name: Talks
+    data: talks.yml
+    institution_field: event
+    desc_field: details
+    entries: all
   # - name: Training
   #   data: training.yml
   #   title_field: course
@@ -35,11 +40,6 @@ sections:
   #   entries: all
   # # - name: Skills
   # #   data: skills.yml
-  # - name: Presentations
-  #   data: presentations.yml
-  #   title_field: type
-  #   institution_field: event
-  #   desc_field: title
   # - name: Software
   #   data: software.yml
   #   title_field: name

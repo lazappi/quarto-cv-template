@@ -1,0 +1,20 @@
+- id: inventors-annual-meeting
+  title: "From DeLorean to Locomotive: Engineering Time Machines"
+  date: 1991
+  event: Society of Inventors Annual Meeting
+  location: San Francisco, CA, USA
+  details: Panelist on the evolution of time travel technology.
+
+- id: world-science-congress
+  title: "Paradoxes and Causality: Lessons from Time Travel"
+  date: 1986
+  event: World Science Congress
+  location: London, UK
+  details: Invited talk on managing paradoxes and causality in theoretical physics.
+
+- id: international-physics-symposium
+  title: "The Flux Capacitor: A New Era in Temporal Mechanics"
+  date: 1985
+  event: International Physics Symposium
+  location: Geneva, Switzerland
+  details: Keynote on the invention and implications of the flux capacitor.
