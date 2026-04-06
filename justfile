@@ -25,7 +25,7 @@ render-all:
 [confirm("Are you sure you want to clean output for {{VERSION}}?")]
 clean VERSION:
     @echo "Cleaning output for {{VERSION}}..."
-    rm -rf output/{{VERSION}}
+    rm -f output/{{VERSION}}.pdf
     @echo "✓ Cleaned"
 
 # Clean all generated output files
@@ -33,7 +33,7 @@ clean VERSION:
 [confirm("Are you sure you want to clean all output?")]
 clean-all:
     @echo "Cleaning output directory..."
-    rm -rf output/*
+    rm -f output/*.pdf
     @echo "✓ Cleaned"
 
 # View a specific version's PDF
@@ -41,7 +41,21 @@ clean-all:
 [arg("VERSION", help="Version to view, see 'just list'")]
 view VERSION: (render VERSION)
     @echo "Opening {{VERSION}} CV..."
-    open output/{{VERSION}}/cv.pdf
+    open output/{{VERSION}}.pdf
+
+# Render preview PNGs from rendered PDFs
+[group("render")]
+render-previews *VERSIONS:
+    @if [ -n "{{VERSIONS}}" ]; then \
+        ./scripts/render-previews.sh {{VERSIONS}}; \
+    else \
+        ./scripts/render-previews.sh; \
+    fi
+
+# Render all versions and regenerate preview PNGs
+[group("render")]
+refresh-previews:
+    @./scripts/render-previews.sh
 
 # Show information about the CV system
 [group("info")]
