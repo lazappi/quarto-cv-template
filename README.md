@@ -33,7 +33,7 @@ just render short
 
 ## Prerequisites
 
-Software:
+**Software:**
 
 - [Quarto](https://quarto.org/)
 - [R](https://cran.r-project.org/)
@@ -42,13 +42,16 @@ Software:
   - [**{purrr}**](https://purrr.tidyverse.org/)
 - [`just`](https://just.systems/)
 
-Fonts:
+**Fonts:**
 
 - [Fira Sans](https://fonts.google.com/specimen/Fira+Sans)
 - [Noto Sans](https://fonts.google.com/specimen/Noto+Sans)
+- [Noto Sans Mono](https://fonts.google.com/specimen/Noto+Sans+Mono)
 - [FontAwesome](https://fontawesome.com)
 
-For development:
+Fonts can be set in `config.yml` but FontAwesome is always required for symbols.
+
+**Development:**
 
 - [`pre-commit`](https://pre-commit.com/)
 - [`yamllint`](https://yamllint.readthedocs.io/en/stable/)
@@ -156,7 +159,8 @@ sections:
     from_field: from               # Field in section items to use as the from date
     to_field: to                   # Field in section items to use as the to date
     desc_field: description        # Field in section items to use as the description
-    entries: all
+    url_fields: [field1, field2]   # Fields to format as URLs (default: None)
+    entries: all                   # Which entries to include in the section
 ```
 
 **Notes:**
@@ -171,6 +175,13 @@ sections:
         - entry1
         - entry2
     ```
+
+Publications sections can have the following additional fields:
+
+```yaml
+    highlight_authors: ["Last, First"]  # Names to highlight in author lists
+    joint_authorship: NULL              # Symbol to indicate joint authorship, e.g. "\*"
+```
 
 ## Development notes
 

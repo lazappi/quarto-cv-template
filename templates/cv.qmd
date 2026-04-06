@@ -53,6 +53,10 @@ glue(
 positions_str <- glue_collapse(double_quote(meta$positions), ", ")
 heading_font_str <- glue_collapse(double_quote(config$heading_font), ", ")
 body_font_str <- glue_collapse(double_quote(config$body_font), ", ")
+url_font <- config$url_font %||% c(
+  "IBM Plex Mono", "Fira Mono", "DejaVu Sans Mono", "monospace"
+)
+url_font_str <- glue_collapse(double_quote(url_font), ", ")
 
 # nolint start: commented_code_linter
 glue(
@@ -248,9 +252,7 @@ format_urls <- function(items, url_fields) {
           "features: (\"smcp\": 0)); ",
           "#link(",
           "\"{item[[field]]}\")",
-          "[#text(font: (",
-          "\"IBM Plex Mono\", \"Fira Mono\", \"DejaVu Sans Mono\", \"monospace\"",
-          "))",
+          "[#text(font: ({url_font_str}))",
           "[{item[[field]]}]]"
         )
       }

@@ -9,6 +9,8 @@ heading_font:
 body_font:
   - Noto Sans
   - Roboto
+url_font:
+  - Noto Sans Mono
 body_font_size: 10.5pt
 paper_size: a4
 side_width: 4cm
