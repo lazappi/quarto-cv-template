@@ -19,9 +19,8 @@ echo "Rendering CV: $VERSION"
 
 cd "$WORKSPACE_DIR"
 
-OUTPUT_DIR="$WORKSPACE_DIR/output/$VERSION"
-mkdir -p "$OUTPUT_DIR"
-echo "Output directory: $OUTPUT_DIR"
+OUTPUT_FILE="$WORKSPACE_DIR/output/$VERSION.pdf"
+echo "Output file: $OUTPUT_FILE"
 
 export CV_VERSION="$WORKSPACE_DIR/versions/$VERSION.yml"
 export WORKSPACE_DIR="$WORKSPACE_DIR"
@@ -29,9 +28,12 @@ export WORKSPACE_DIR="$WORKSPACE_DIR"
 echo "  → Generating PDF..."
 quarto render "$WORKSPACE_DIR/templates/cv.qmd" \
     --to typst \
-    --output-dir $OUTPUT_DIR
+    --output-dir "$WORKSPACE_DIR/output"
+
+# Rename the output file to match the version name
+mv "$WORKSPACE_DIR/output/cv.pdf" "$OUTPUT_FILE"
 
 # Clean up temporary files
 rm -f "$WORKSPACE_DIR/templates/_temp_publications.yml"
 
-echo "✓ Done. Output in: $OUTPUT_DIR"
+echo "✓ Done. Output in: $OUTPUT_FILE"
