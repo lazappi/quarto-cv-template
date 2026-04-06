@@ -197,6 +197,18 @@ load_section_items <- function(filename, entries, url_fields = NULL) {
     return(data)
   }
 
+  # Check all entries exist
+  missing_entries <- setdiff(entries, map_chr(data, "id"))
+  if (length(missing_entries) > 0) {
+    stop(
+      glue(
+        "The following entries were not found in {filename}: ",
+        "{glue_collapse(missing_entries, ', ')}"
+      ),
+      call. = FALSE
+    )
+  }
+
   # Filter and reorder by ID
   filtered_data <- Filter(function(entry) {
     !is.null(entry$id) && entry$id %in% entries
@@ -355,6 +367,18 @@ generate_publications <- function(section_config) {
       publications[[key]]$id <- NULL
     }
   } else {
+    # Check all specified publication IDs exist
+    missing_pub_ids <- setdiff(pub_ids, map_chr(publications_raw, "id"))
+    if (length(missing_pub_ids) > 0) {
+      stop(
+        glue(
+          "The following publication IDs were not found in {section_config$data}: ",
+          "{glue_collapse(missing_pub_ids, ', ')}"
+        ),
+        call. = FALSE
+      )
+    }
+
     # Filter by IDs
     publications <- list()
     for (key in names(publications_raw)) {
