@@ -97,7 +97,7 @@ Available recipes:
     [render]
     render VERSION            # Render a specific CV version by name
     render-all                # Render all available CV versions
-    render-previews *VERSIONS # Render preview PNGs from rendered PDFs
+    render-previews *VERSIONS # Export preview PNGs from existing PDFs
     refresh-previews          # Render all versions and regenerate preview PNGs
 
     [clean]
@@ -127,6 +127,11 @@ Available recipes:
 
 Use 'just usage RECIPE' for details on a specific command
 ```
+
+`just render-previews` only exports PNG previews from PDFs already present in `output/`.
+Use `just refresh-previews` when you want to re-render CV PDFs first and then update previews.
+
+The underlying `scripts/render-previews.sh` script now only exports previews; rendering is handled separately by `just render-all` or `just refresh-previews`.
 
 ## Output Examples
 

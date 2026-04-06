@@ -1,31 +1,19 @@
 #!/usr/bin/env bash
 
-# Render one or more CV versions and export each PDF page to PNG.
+# Export one or more rendered CV PDFs to preview PNGs.
 # Usage:
-#   ./scripts/render-previews.sh [--skip-render] [version ...]
+#   ./scripts/render-previews.sh [version ...]
 # Examples:
 #   ./scripts/render-previews.sh
 #   ./scripts/render-previews.sh full short
-#   ./scripts/render-previews.sh --skip-render full
 
 set -euo pipefail
-
-SKIP_RENDER=false
-if [[ "${1:-}" == "--skip-render" ]]; then
-    SKIP_RENDER=true
-    shift
-fi
 
 WORKSPACE_DIR="$(git rev-parse --show-toplevel)"
 PREVIEW_DIR="$WORKSPACE_DIR/docs/previews"
 
 if ! command -v pdftoppm >/dev/null 2>&1; then
     echo "Error: pdftoppm is required (install poppler)."
-    exit 1
-fi
-
-if [[ "$SKIP_RENDER" == false ]] && ! command -v quarto >/dev/null 2>&1; then
-    echo "Error: quarto is required for rendering."
     exit 1
 fi
 
@@ -51,13 +39,8 @@ for version in "${versions[@]}"; do
         exit 1
     fi
 
-    if [[ "$SKIP_RENDER" == false ]]; then
-        echo "Rendering version: $version"
-        "$WORKSPACE_DIR/scripts/render.sh" "$version"
-    fi
-
     if [[ ! -f "$pdf_file" ]]; then
-        echo "Error: PDF not found after render: $pdf_file"
+        echo "Error: rendered PDF not found: $pdf_file"
         exit 1
     fi
 

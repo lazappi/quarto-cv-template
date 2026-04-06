@@ -43,7 +43,7 @@ view VERSION: (render VERSION)
     @echo "Opening {{VERSION}} CV..."
     open output/{{VERSION}}.pdf
 
-# Render preview PNGs from rendered PDFs
+# Render preview PNGs from existing rendered PDFs
 [group("render")]
 render-previews *VERSIONS:
     @if [ -n "{{VERSIONS}}" ]; then \
@@ -54,7 +54,7 @@ render-previews *VERSIONS:
 
 # Render all versions and regenerate preview PNGs
 [group("render")]
-refresh-previews:
+refresh-previews: render-all
     @./scripts/render-previews.sh
 
 # Show information about the CV system
