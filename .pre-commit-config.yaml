@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: check-yaml
         name: Validate YAML syntax
@@ -28,7 +28,7 @@ repos:
         exclude: ^(\.codespell-ignore|\.pre-commit-config\.yaml|output/|_extensions/)
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.5
+    rev: v0.15.9
     hooks:
       - id: ruff
         name: Sort imports and lint Python files
@@ -53,7 +53,7 @@ repos:
         exclude: ^output/
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
         name: Fix end of files
