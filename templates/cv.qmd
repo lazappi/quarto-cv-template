@@ -463,6 +463,24 @@ generate_section <- function(section_config) {
     )
   }
 
+  if (is.null(section_config$data)) {
+    stop(
+      glue(
+        "Section '{section_config$name}' is missing 'data' field in version config"
+      ),
+      call. = FALSE
+    )
+  }
+
+  if (!file.exists(file.path(workspace_dir, "data", "sections", section_config$data))) {
+    stop(
+      glue(
+        "Data file '{section_config$data}' for section '{section_config$name}' not found"
+      ),
+      call. = FALSE
+    )
+  }
+
   if (!is.null(section_config$type) && section_config$type == "publications") {
     generate_publications(section_config)
     return(invisible())
