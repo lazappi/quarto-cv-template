@@ -449,13 +449,22 @@ generate_new_page <- function() {
 #| label: generate_section
 
 generate_section <- function(section_config) {
-  if (!is.null(section_config$type) && section_config$type == "publications") {
-    generate_publications(section_config)
+  if (!is.null(section_config$type) && section_config$type == "new-page") {
+    generate_new_page()
     return(invisible())
   }
 
-  if (!is.null(section_config$type) && section_config$type == "new-page") {
-    generate_new_page()
+  if (is.null(section_config$entries)) {
+    stop(
+      glue(
+        "Section '{section_config$name}' is missing 'entries' field in version config"
+      ),
+      call. = FALSE
+    )
+  }
+
+  if (!is.null(section_config$type) && section_config$type == "publications") {
+    generate_publications(section_config)
     return(invisible())
   }
 
