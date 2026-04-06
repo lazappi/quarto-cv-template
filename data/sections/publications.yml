@@ -1,9 +1,33 @@
+brown1879journey:
+  type: book
+  title: My miraculous journey through time
+  author: Brown, Emmett
+  date: 1879
+  publisher: Harper & Brothers`
+
+brown1983flux:
+  type: article
+  title: Automatic dog feeding apparatus - basic principles of operation
+  author: Brown, Emmett
+  date: 1981
+  page-range: 1-22
+  serial-number:
+    doi: 10.9999/hv.1985.1
+  parent:
+    type: periodical
+    title: Journal of Zoology
+    publisher: Deutsche Gesellschaft für Tierfutter und Nahrung
+    volume: 1
+
 brown1985flux:
   type: article
   title: "The Flux Capacitor: Principles and Applications in Temporal Mechanics"
   author:
     - Brown, Emmett
-    - von Braun, Helga
+    - Spot
+    - name: Braun
+      given-name: Helga
+      prefix: von
   date: 1985
   page-range: 1-22
   serial-number:
