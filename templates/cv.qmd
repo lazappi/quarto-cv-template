@@ -34,7 +34,7 @@ version_config <- read_yaml(version_file)
 
 cat("```{=typst}\n")
 cat(
-  "#import \"@preview/neat-cv:0.4.0\": (",
+  "#import \"@preview/neat-cv:0.7.0\": (",
   "  contact-info, cv, email-link, entry, item-pills, item-with-level,",
   "  publications, side, social-links,",
   ")\n",
@@ -53,10 +53,7 @@ glue(
 positions_str <- glue_collapse(double_quote(meta$positions), ", ")
 heading_font_str <- glue_collapse(double_quote(config$heading_font), ", ")
 body_font_str <- glue_collapse(double_quote(config$body_font), ", ")
-url_font <- config$url_font %||% c(
-  "IBM Plex Mono", "Fira Mono", "DejaVu Sans Mono", "monospace"
-)
-url_font_str <- glue_collapse(double_quote(url_font), ", ")
+url_font_str <- glue_collapse(double_quote(config$url_font), ", ")
 
 # nolint start: commented_code_linter
 glue(
@@ -360,6 +357,11 @@ generate_publications <- function(section_config) {
   publications <- NULL
 
   publications_raw <- read_yaml(publications_raw_path)
+  publication_ids <- map2_chr(
+    publications_raw,
+    names(publications_raw),
+    \(publication, publication_name) publication$id %||% publication_name
+  )
 
   pub_ids <- section_config$entries
   if (length(pub_ids) == 1 && pub_ids == "all") {
@@ -370,7 +372,7 @@ generate_publications <- function(section_config) {
     }
   } else {
     # Check all specified publication IDs exist
-    missing_pub_ids <- setdiff(pub_ids, map_chr(publications_raw, "id"))
+    missing_pub_ids <- setdiff(pub_ids, publication_ids)
     if (length(missing_pub_ids) > 0) {
       stop(
         glue(
@@ -385,8 +387,7 @@ generate_publications <- function(section_config) {
     publications <- list()
     for (key in names(publications_raw)) {
       if (
-        !is.null(publications_raw[[key]]$id) &&
-          publications_raw[[key]]$id %in% pub_ids
+        (publications_raw[[key]]$id %||% key) %in% pub_ids
       ) {
         publications[[key]] <- publications_raw[[key]]
         # Remove the 'id' field as it's not part of neat-cv format

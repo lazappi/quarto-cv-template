@@ -128,11 +128,6 @@ Available recipes:
 Use 'just usage RECIPE' for details on a specific command
 ```
 
-`just render-previews` only exports PNG previews from PDFs already present in `output/`.
-Use `just refresh-previews` when you want to re-render CV PDFs first and then update previews.
-
-The underlying `scripts/render-previews.sh` script now only exports previews; rendering is handled separately by `just render-all` or `just refresh-previews`.
-
 ## Output Examples
 
 ### Full Version
@@ -187,8 +182,3 @@ Publications sections can have the following additional fields:
     highlight_authors: ["Last, First"]  # Names to highlight in author lists
     joint_authorship: NULL              # Symbol to indicate joint authorship, e.g. "\*"
 ```
-
-## Development notes
-
-This currently uses version 0.4.0 of the Neat CV template as more recent versions require a newer version of Typst than is included with Quarto.
-This should be updated in the future.
