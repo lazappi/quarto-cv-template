@@ -3,39 +3,46 @@ sections:
     data: education.yml
     title_field: degree
     desc_field: details
-    entries: all
+    entries:
+      - phd
   - name: Professional Experience
     data: professional.yml
     title_field: position
     institution_field: employer
     desc_field: details
-    entries: all
+    entries:
+      - inventor
   - name: Academic Experience
     data: academic.yml
     title_field: position
     institution_field: employer
     desc_field: details
-    entries: all
+    entries:
+      - visiting-professor
   - name: Grants and Awards
     data: awards.yml
     institution_field: issuer
     date_field: year
-    entries: all
+    entries:
+      - lifetime-achievement
   - type: new-page
   - name: Talks
     data: talks.yml
     institution_field: event
     desc_field: details
-    entries: all
+    entries:
+      - inventors-annual-meeting
   - name: Publications
     type: publications
     data: publications.yml
     highlight_authors: ["Brown, Emmett", "Brown, Emmett Lathrop"]
     joint_authorship: NULL # Symbol to indicate joint authorship, e.g. "\*"
-    entries: all
+    entries:
+      - brown1990ethics
   - name: References
     data: references.yml
     title_field: name
     institution_field: position
     desc_field: details
-    entries: all
+    entries:
+      - marty-mcfly
