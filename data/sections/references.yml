@@ -1,0 +1,15 @@
+- id: marty-mcfly
+  name: Marty McFly
+  position: Musician & Time Traveler
+  location: Hill Valley, CA, USA
+  details: |
+    Long-term collaborator and field assistant in temporal experiments.\
+    Contact: #email-link("marty.mcfly@hillvalley.com")
+
+- id: clara-clayton
+  name: Clara Clayton
+  position: Science Educator
+  location: Hill Valley, CA, USA
+  details: |
+    Advisor on science communication and educational outreach.\
+    Contact: #email-link("clara.clayton@hillvalley.edu")

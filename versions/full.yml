@@ -31,7 +31,13 @@ sections:
     type: publications
     data: publications.yml
     highlight_authors: ["Brown, Emmett", "Brown, Emmett Lathrop"]
-    joint_authorship: NULL # Symbol to indicate joint authorship, e.g. "\\*"
+    joint_authorship: NULL # Symbol to indicate joint authorship, e.g. "\*"
+    entries: all
+  - name: References
+    data: references.yml
+    title_field: name
+    institution_field: position
+    desc_field: details
     entries: all
   # - name: Training
   #   data: training.yml

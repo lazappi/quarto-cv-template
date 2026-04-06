@@ -371,7 +371,7 @@ generate_publications <- function(section_config) {
   }
 
   if (!is.null(publications)) {
-    cat("```{=typst}\n")
+    cat("```{=typst}\n\n")
     # Write filtered publications to a temporary YAML file
     temp_pub_file <- "_temp_publications.yml"
     # Make sure author fields are always lists
@@ -401,7 +401,9 @@ generate_publications <- function(section_config) {
       cat("\n\n")
 
     if (!is.null(section_config$joint_authorship)) {
-      cat("#entry([_{section_config$joint_authorship} indicates joint authorship_])\n\n")
+      glue(
+        "#entry([_{section_config$joint_authorship} indicates joint authorship_])\n\n"
+      ) |> cat()
     }
 
     cat("```\n")
