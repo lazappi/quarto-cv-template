@@ -55,6 +55,22 @@ heading_font_str <- glue_collapse(double_quote(config$heading_font), ", ")
 body_font_str <- glue_collapse(double_quote(config$body_font), ", ")
 url_font_str <- glue_collapse(double_quote(config$url_font), ", ")
 
+if (is.null(meta$custom_links) || length(meta$custom_links) == 0) {
+  custom_links_str <- ""
+} else {
+  custom_links_str <- map(
+    meta$custom_links, function(link) {
+      glue(
+        "(\n",
+        "  {ifelse(!is.null(link$icon), glue('icon-name: \"{link$icon}\", '), '')}",
+        "  label: \"{link$label}\",\n",
+        "  url: \"{link$url}\"\n",
+        ")"
+      )
+    }
+  ) |> glue_collapse(",\n")
+}
+
 # nolint start: commented_code_linter
 glue(
   "#show: cv.with(",
@@ -75,18 +91,9 @@ glue(
   # '    researchgate: "{meta$researchgate}",',
   # '    scholar: "{meta$scholar}",',
   # '    orcid: "{meta$orcid}",',
-  #    Custom links require neat-cv v0.6.2
-  # '    custom-links: (',
-  # '      (',
-  # '        icon-name: "car", // Font Awesome icon name',
-  # '        label: "DeLorean Time Machine",',
-  # '        url: "https://en.wikipedia.org/wiki/DeLorean_time_machine",',
-  # '      ),',
-  # '      (',
-  # '        label: "Back to the Future",',
-  # '        url: "https://www.backtothefuture.com/",',
-  # '      ),',
-  # '    ),',
+  "    custom-links: (",
+  "      {custom_links_str}",
+  "    ),",
   "  ),",
   '  profile-picture: image("{meta$profile_picture}"),',
   '  accent-color: rgb("{config$accent_color}"),',
@@ -357,12 +364,6 @@ generate_publications <- function(section_config) {
   publications <- NULL
 
   publications_raw <- read_yaml(publications_raw_path)
-  publication_ids <- map2_chr(
-    publications_raw,
-    names(publications_raw),
-    \(publication, publication_name) publication$id %||% publication_name
-  )
-
   pub_ids <- section_config$entries
   if (length(pub_ids) == 1 && pub_ids == "all") {
     # Include all publications and remove 'id' field
@@ -372,7 +373,7 @@ generate_publications <- function(section_config) {
     }
   } else {
     # Check all specified publication IDs exist
-    missing_pub_ids <- setdiff(pub_ids, publication_ids)
+    missing_pub_ids <- setdiff(pub_ids, names(publications_raw))
     if (length(missing_pub_ids) > 0) {
       stop(
         glue(
@@ -387,7 +388,8 @@ generate_publications <- function(section_config) {
     publications <- list()
     for (key in names(publications_raw)) {
       if (
-        (publications_raw[[key]]$id %||% key) %in% pub_ids
+        !is.null(publications_raw[[key]]$id) &&
+          publications_raw[[key]]$id %in% pub_ids
       ) {
         publications[[key]] <- publications_raw[[key]]
         # Remove the 'id' field as it's not part of neat-cv format

@@ -16,4 +16,10 @@ linkedin: emmett-brown-hv
 # researchgate: yourprofile
 # scholar: yourprofile
 # orcid: 0000-0000-0000-0000
+custom_links:
+  - icon: car # FontAwesome icon name
+    label: DeLorean Time Machine
+    url: https://en.wikipedia.org/wiki/DeLorean_time_machine
+  - label: Back to the Future
+    url: https://www.backtothefuture.com/
 profile_picture: images/profile.png
