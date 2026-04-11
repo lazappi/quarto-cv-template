@@ -35,9 +35,10 @@ quarto render "$WORKSPACE_DIR/templates/cv.qmd" \
 TYPST_FILE="$WORKSPACE_DIR/templates/cv.typ"
 if [ -f "$TYPST_FILE" ]; then
     echo "  → Removing Quarto wrapper..."
-    # Remove the #set page(...) block and the #show: doc => article(...) block
-    # These are injected by Quarto's Typst template and conflict with Neat CV's layout
-    perl -0777 -i -pe 's/#set page\([\s\S]*?\)\n\n#show: doc => article\([\s\S]*?\)\n\n//s' "$TYPST_FILE"
+    # Remove the duplicate #set page(...) block and the #show: doc => article(...) block
+    # inserted by Quarto which causes an empty first page
+    sed '/^#set page(/,/^$/d; /^#show: doc => article(/,/^$/d' "$TYPST_FILE" > "$TYPST_FILE.tmp"
+    mv "$TYPST_FILE.tmp" "$TYPST_FILE"
 fi
 
 # Compile the cleaned Typst file to PDF
