@@ -12,10 +12,11 @@ render VERSION:
 [group("render")]
 render-all:
     @echo "Rendering all CV versions..."
-    @for version in versions/*.yml; do \
-        name=$(basename "$version" .yml); \
-        echo "→ Rendering $name..."; \
-        ./scripts/render.sh "$name"; \
+    @for version in versions/*.yml \
+    do \
+        name=$(basename "$version" .yml) \
+        echo "→ Rendering $name..." \
+        ./scripts/render.sh "$name" \
     done
     @echo "✓ All versions rendered"
 
@@ -46,10 +47,11 @@ view VERSION: (render VERSION)
 # Render preview PNGs from existing rendered PDFs
 [group("render")]
 render-previews *VERSIONS:
-    @if [ -n "{{VERSIONS}}" ]; then \
-        ./scripts/render-previews.sh {{VERSIONS}}; \
+    @if [ -n "{{VERSIONS}}" ] \
+    then \
+        ./scripts/render-previews.sh {{VERSIONS}} \
     else \
-        ./scripts/render-previews.sh; \
+        ./scripts/render-previews.sh \
     fi
 
 # Render all versions and regenerate preview PNGs
@@ -75,9 +77,10 @@ info:
 [group("info")]
 list:
     @echo "Available versions:"
-    @for version in versions/*.yml; do \
-        name=$(basename "$version" .yml); \
-        echo "  - $name"; \
+    @for version in versions/*.yml \
+    do \
+        name=$(basename "$version" .yml) \
+        echo "  - $name" \
     done
 
 # Run all validation checks
@@ -104,49 +107,53 @@ spell-check:
 [group("validate")]
 format-python:
     @echo "Formatting Python files..."
-    @if command -v ruff >/dev/null 2>&1; then \
-        ruff check --select I --fix scripts/; \
-        ruff format scripts/; \
-        echo "✓ Python files formatted"; \
+    @if command -v ruff >/dev/null 2>&1 \
+    then \
+        ruff check --select I --fix scripts/ \
+        ruff format scripts/ \
+        echo "✓ Python files formatted" \
     else \
-        echo "Error: ruff not found"; \
-        exit 1; \
+        echo "Error: ruff not found" \
+        exit 1 \
     fi
 
 # Lint and style R code (Quarto templates)
 [group("validate")]
 lint-r:
     @echo "Linting and styling R code..."
-    @if command -v Rscript >/dev/null 2>&1; then \
-        Rscript -e "lintr::lint('templates/cv.qmd', cache=FALSE)"; \
-        Rscript -e "styler::style_file('templates/cv.qmd', strict=TRUE)"; \
-        echo "✓ R code linted and formatted"; \
+    @if command -v Rscript >/dev/null 2>&1 \
+    then \
+        Rscript -e "lintr::lint('templates/cv.qmd', cache=FALSE)" \
+        Rscript -e "styler::style_file('templates/cv.qmd', strict=TRUE)" \
+        echo "✓ R code linted and formatted" \
     else \
-        echo "Error: R not found"; \
-        exit 1; \
+        echo "Error: R not found" \
+        exit 1 \
     fi
 
 # Run pre-commit checks manually on all files
 [group("validate")]
 check:
     @echo "Running pre-commit checks on all files..."
-    @if command -v pre-commit >/dev/null 2>&1; then \
-        pre-commit run --all-files; \
+    @if command -v pre-commit >/dev/null 2>&1 \
+    then \
+        pre-commit run --all-files \
     else \
-        echo "Error: pre-commit not found"; \
-        exit 1; \
+        echo "Error: pre-commit not found" \
+        exit 1 \
     fi
 
 # Install pre-commit hooks
 [group("validate")]
 install-hooks:
     @echo "Installing pre-commit hooks..."
-    @if command -v pre-commit >/dev/null 2>&1; then \
-        pre-commit install; \
-        echo "✓ Pre-commit hooks installed"; \
+    @if command -v pre-commit >/dev/null 2>&1 \
+    then \
+        pre-commit install \
+        echo "✓ Pre-commit hooks installed" \
     else \
-        echo "Error: pre-commit not found"; \
-        exit 1; \
+        echo "Error: pre-commit not found" \
+        exit 1 \
     fi
 
 # Show help for all recipes
