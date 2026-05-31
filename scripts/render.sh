@@ -45,9 +45,14 @@ fi
 echo "  → Compiling cleaned Typst to PDF..."
 quarto typst compile "$TYPST_FILE" "$OUTPUT_FILE"
 
+# Generate Markdown version directly using R
+echo "  → Rendering Markdown version..."
+Rscript --vanilla "$WORKSPACE_DIR/scripts/render-markdown.R"
+
 # Clean up temporary files
 rm -f "$WORKSPACE_DIR/templates/_temp_publications.yml"
 rm -f "$TYPST_FILE"
 rm -f "$WORKSPACE_DIR/output/cv.pdf"  # Remove Quarto's default output (not post-processed)
+rm -f "$WORKSPACE_DIR/output/cv.md"   # Remove Quarto's default output
 
-echo "✓ Done. Output in: $OUTPUT_FILE"
+echo "✓ Done."

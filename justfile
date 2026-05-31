@@ -121,14 +121,15 @@ format-python:
 [group("validate")]
 lint-r:
     @echo "Linting and styling R code..."
-    @if command -v Rscript >/dev/null 2>&1 \
-    then \
-        Rscript -e "lintr::lint('templates/cv.qmd', cache=FALSE)" \
-        Rscript -e "styler::style_file('templates/cv.qmd', strict=TRUE)" \
-        echo "✓ R code linted and formatted" \
+    @if command -v Rscript >/dev/null 2>&1; then \
+        Rscript -e "lintr::lint('templates/cv.qmd', cache=FALSE)" && \
+        Rscript -e "lintr::lint('scripts/render-markdown.R', cache=FALSE)" && \
+        Rscript -e "styler::style_file('templates/cv.qmd', strict=TRUE)" && \
+        Rscript -e "styler::style_file('scripts/render-markdown.R', strict=TRUE)" && \
+        echo "✓ R code linted and formatted"; \
     else \
-        echo "Error: R not found" \
-        exit 1 \
+        echo "Error: R not found"; \
+        exit 1; \
     fi
 
 # Run pre-commit checks manually on all files

@@ -26,9 +26,11 @@ just render full
 just render short
 ```
 
-3. Find output PDFs in:
+3. Find outputs in:
 
+- `output/full.md`
 - `output/full.pdf`
+- `output/short.md`
 - `output/short.pdf`
 
 ## Prerequisites
@@ -72,8 +74,9 @@ Fonts can be set in `config.yml` but FontAwesome is always required for symbols.
 │   └── sections/             # Section content files
 ├── docs/
 │   └── previews/             # PNG previews used in the README
-├── output/                   # Rendered PDFs
+├── output/                   # Rendered PDFs and Markdown files
 ├── scripts/
+│   ├── render-markdown.R     # Render a CV version to Markdown from YAML data
 │   ├── render-previews.sh    # Generate PNG previews from rendered PDFs
 │   └── render.sh             # Render a CV version with Quarto
 ├── templates/
@@ -112,7 +115,7 @@ Available recipes:
     validate-yaml             # Validate YAML files
     spell-check               # Check spelling across all files
     format-python             # Format Python files with ruff
-    lint-r                    # Lint and style R code (Quarto templates)
+    lint-r                    # Lint and style R code (templates and scripts)
     check                     # Run pre-commit checks manually on all files
     install-hooks             # Install pre-commit hooks
 
