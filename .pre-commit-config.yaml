@@ -40,14 +40,14 @@ repos:
     hooks:
       - id: lintr
         name: Lint R code
-        entry: Rscript -e "lintr::lint(commandArgs(TRUE), cache=FALSE)"
+        entry: Rscript -e "for (f in commandArgs(TRUE)) lintr::lint(f, cache=FALSE)"
         language: system
         files: '\.(qmd|R)$'
         exclude: ^output/
 
       - id: styler
         name: Style R code
-        entry: Rscript -e "styler::style_file(commandArgs(TRUE), strict=TRUE)"
+        entry: Rscript -e "for (f in commandArgs(TRUE)) styler::style_file(f, strict=TRUE)"
         language: system
         files: '\.(qmd|R)$'
         exclude: ^output/
