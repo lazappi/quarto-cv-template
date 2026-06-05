@@ -15,6 +15,7 @@ sections:
     title_field: position
     institution_field: employer
     desc_field: details
+    github_stats: true
     entries: all
   - name: Grants and Awards
     data: awards.yml

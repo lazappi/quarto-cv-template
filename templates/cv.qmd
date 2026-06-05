@@ -13,15 +13,19 @@ knitr:
 ```{r}
 #| label: libraries
 
-library(yaml)
-library(glue)
-library(purrr)
+suppressPackageStartupMessages({
+  library(yaml)
+  library(glue)
+  library(purrr)
+  library(jsonlite)
+})
 ```
 
 ```{r}
 #| label: setup
 
 workspace_dir <- Sys.getenv("WORKSPACE_DIR", ".")
+source(file.path(workspace_dir, "scripts/github-stats.R"))
 meta <- read_yaml(file.path(workspace_dir, "data/meta.yml"))
 config <- read_yaml(file.path(workspace_dir, "data/config.yml"))
 version_file <- Sys.getenv("CV_VERSION", "versions/full.yml")
@@ -499,6 +503,13 @@ generate_section <- function(section_config) {
 
   if (is.null(section_data)) {
     return()
+  }
+
+  if (isTRUE(section_config$github_stats)) {
+    section_data <- add_github_stats( # nolint: object_usage_linter.
+      section_data,
+      title_field = section_config$title_field %||% "title"
+    )
   }
 
   generate_section_content(

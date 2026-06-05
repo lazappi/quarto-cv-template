@@ -2,11 +2,15 @@
 # Render CV to Markdown format
 # Usage: Rscript scripts/render-markdown.R
 
-library(yaml)
-library(glue)
-library(purrr)
+suppressPackageStartupMessages({
+  library(yaml)
+  library(glue)
+  library(purrr)
+  library(jsonlite)
+})
 
 workspace_dir <- Sys.getenv("WORKSPACE_DIR", ".")
+source(file.path(workspace_dir, "scripts/github-stats.R"))
 version_file <- Sys.getenv("CV_VERSION")
 version_name <- sub("\\.yml$", "", basename(version_file))
 output_file <- file.path(workspace_dir, "output", paste0(version_name, ".md"))
@@ -171,6 +175,13 @@ for (section_config in version_config$sections) {
       section_config$entries
     )
 
+    if (isTRUE(section_config$github_stats)) {
+      section_data <- add_github_stats(
+        section_data,
+        title_field = section_config$title_field %||% "title"
+      )
+    }
+
     for (entry in section_data) {
       title <- entry[[section_config$title_field %||% "title"]] %||% ""
       institution <- entry[[section_config$institution_field %||% "institution"]] %||% ""
@@ -181,7 +192,7 @@ for (section_config in version_config$sections) {
         from_date <- entry[[section_config$from_field %||% "from"]]
         to_date <- entry[[section_config$to_field %||% "to"]]
         if (!is.null(from_date) && !is.null(to_date)) {
-          date <- paste(from_date, to_date, sep = " – ")
+          date <- paste(from_date, to_date, sep = " <U+2013> ")
         } else if (!is.null(from_date)) {
           date <- from_date
         }
@@ -195,7 +206,7 @@ for (section_config in version_config$sections) {
         if (location != "") parts <- c(parts, location)
         inst_str <- paste(parts, collapse = ", ")
         if (entry_header != "") {
-          entry_header <- paste0(entry_header, " — *", inst_str, "*")
+          entry_header <- paste0(entry_header, " <U+2014> *", inst_str, "*")
         } else {
           entry_header <- paste0("*", inst_str, "*")
         }
