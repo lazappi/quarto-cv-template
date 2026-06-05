@@ -47,11 +47,10 @@ view VERSION: (render VERSION)
 # Render preview PNGs from existing rendered PDFs
 [group("render")]
 render-previews *VERSIONS:
-    @if [ -n "{{VERSIONS}}" ] \
-    then \
-        ./scripts/render-previews.sh {{VERSIONS}} \
+    @if [ -n "{{VERSIONS}}" ]; then \
+        ./scripts/render-previews.sh {{VERSIONS}}; \
     else \
-        ./scripts/render-previews.sh \
+        ./scripts/render-previews.sh; \
     fi
 
 # Render all versions and regenerate preview PNGs
