@@ -7,6 +7,7 @@ A flexible CV template powered by Quarto and Typst using the [Neat CV](https://g
 - Content is stored as YAML files (see `data/`)
 - Structure is defined using YAML config files (see `versions/`)
   - A new version with selected sections and entries can be created without needing to modify the content files
+- Optional GitHub repository stats (stars and forks) can be fetched and displayed next to entry titles
 - Simple commands for rendering etc.
 - Automated checks for spelling etc.
 
@@ -42,6 +43,7 @@ just render short
   - [**{yaml}**](https://yaml.r-lib.org/)
   - [**{glue}**](https://glue.tidyverse.org/)
   - [**{purrr}**](https://purrr.tidyverse.org/)
+  - [**{jsonlite}**](https://jeroen.r-universe.dev/jsonlite) *(required for GitHub stats)*
 - [`just`](https://just.systems/)
 
 **Fonts:**
@@ -76,6 +78,7 @@ Fonts can be set in `config.yml` but FontAwesome is always required for symbols.
 │   └── previews/             # PNG previews used in the README
 ├── output/                   # Rendered PDFs and Markdown files
 ├── scripts/
+│   ├── github-stats.R        # GitHub API helpers for fetching repo stats
 │   ├── render-markdown.R     # Render a CV version to Markdown from YAML data
 │   ├── render-previews.sh    # Generate PNG previews from rendered PDFs
 │   └── render.sh             # Render a CV version with Quarto
@@ -163,6 +166,7 @@ sections:
     to_field: to                   # Field in section items to use as the to date
     desc_field: description        # Field in section items to use as the description
     url_fields: [field1, field2]   # Fields to format as URLs (default: None)
+    github_stats: false            # Fetch and display GitHub stars and forks for entries (default: false)
     entries: all                   # Which entries to include in the section
 ```
 
@@ -185,3 +189,35 @@ Publications sections can have the following additional fields:
     highlight_authors: ["Last, First"]  # Names to highlight in author lists
     joint_authorship: NULL              # Symbol to indicate joint authorship, e.g. "\*"
 ```
+
+## GitHub repository stats
+
+Sections can display GitHub star and fork counts next to entry titles.
+
+**1. Add `github: owner/repo` to an entry in a section data file:**
+
+```yaml
+- id: my-package
+  title: My R Package
+  github: owner/my-package
+  description: An R package for doing things.
+```
+
+**2. Enable stats for that section in the version config with `github_stats: true`:**
+
+```yaml
+sections:
+  - name: Software
+    data: software.yml
+    github_stats: true
+    entries: all
+```
+
+When rendered, the title becomes e.g. **My R Package (1234 stars, 56 forks)**.
+
+**Notes:**
+
+- Stats are fetched from the [GitHub REST API](https://docs.github.com/en/rest/repos/repos#get-a-repository) at render time using unauthenticated requests
+- Entries without a `github` field are not affected
+- If a request fails (e.g., due to rate limiting or a missing repository), a warning is issued and the title is left unchanged
+- Requires the **{jsonlite}** R package is required
