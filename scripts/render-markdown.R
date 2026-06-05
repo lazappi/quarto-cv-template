@@ -186,10 +186,11 @@ for (part in version_config$parts) {
         section_config$entries
       )
 
-      if (isTRUE(section_config$github_stats)) {
-        section_data <- add_github_stats(
+      if (!is.null(section_config$github_stats) && !isFALSE(section_config$github_stats$enabled)) {
+        section_data <- add_github_stats( # nolint: object_usage_linter.
           section_data,
-          title_field = section_config$title_field %||% "title"
+          field = section_config$github_stats$field %||% "title",
+          format = section_config$github_stats$format %||% "{field} ({stars} stars, {forks} forks)"
         )
       }
 

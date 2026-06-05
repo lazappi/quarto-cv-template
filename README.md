@@ -159,7 +159,7 @@ Each part defines a page layout type, its sidebar (if applicable), and the secti
 ```yaml
 parts:
   - type: standard              # Full sidebar layout (default if type is omitted)
-    sidebar: sidebar.yml        # Sidebar file (in `data/`); omit or ~ for empty sidebar
+    sidebar: sidebar.yml        # Sidebar file (in `data/`); omit or NULL for empty sidebar
     sections:
       - name: Section           # Section name
         type: section           # Section type (see below)
@@ -172,7 +172,6 @@ parts:
         to_field: to
         desc_field: description
         url_fields: [field1, field2]
-        github_stats: false     # Fetch and display GitHub stars/forks for entries
         entries: all            # "all" or a list of entry IDs
 
   - type: thin                  # Thin sidebar layout
@@ -272,11 +271,15 @@ Sections can display GitHub star and fork counts next to entry titles.
 sections:
   - name: Software
     data: software.yml
-    github_stats: true
+    github_stats:           # Fetch and display GitHub stars/forks for entries
+      enabled: true         # Whether or not this is enabled, default: True
+      field: title          # The field to add stats to, default: "title'
+      format: "{field} ({stars} stars, {forks} forks)"
     entries: all
 ```
 
-When rendered, the title becomes e.g. **My R Package (1234 stars, 56 forks)**.
+When rendered, the field value is replaced with the formatted value including GitHub stats.
+For example, with this format the title becomes **My package (1234 stars, 56 forks)**.
 
 **Notes:**
 

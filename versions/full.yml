@@ -18,7 +18,10 @@ parts:
         title_field: position
         institution_field: employer
         desc_field: details
-        github_stats: true
+        github_stats:
+          enabled: true
+          field: position
+          format: "{field} ({stars} stars, {forks} forks)"
         entries: all
       - type: new-page
       - name: Grants and Awards

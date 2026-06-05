@@ -27,7 +27,7 @@ fetch_github_stats <- function(repo) {
         conditionMessage(e),
         call. = FALSE
       )
-      NULL
+      list(stars = "X", forks = "Y")
     }
   )
 }
@@ -47,17 +47,22 @@ format_github_stats <- function(stats) {
 #' from the GitHub API and appends them to the title field.
 #'
 #' @param entries List of section entry data
-#' @param title_field Name of the title field to append stats to
+#' @param field Name of the field to append stats to
+#' @param format Format string for how to display the stats. Use `{field}` to
+#'   insert the original field value, and `{stars}` and `{forks}` for the stats
+#'   values.
 #'
 #' @return Entries with GitHub stats appended to titles where applicable
-add_github_stats <- function(entries, title_field = "title") {
+add_github_stats <- function(entries, field = "title", format = "{field} ({stars} stars, {forks} forks)") {
   purrr::map(entries, function(entry) {
     if (!is.null(entry$github)) {
       stats <- fetch_github_stats(entry$github)
       if (!is.null(stats)) {
-        title <- entry[[title_field]] %||% ""
-        entry[[title_field]] <- paste0(
-          title, " (", format_github_stats(stats), ")"
+        entry[[field]] <- glue::glue(
+          format,
+          field = entry[[field]] %||% "",
+          stars = stats$stars,
+          forks = stats$forks
         )
       }
     }
