@@ -141,53 +141,116 @@ Use 'just usage RECIPE' for details on a specific command
 Including all example entries
 
 <img src="docs/previews/full-page-1.png" alt="Full Page 1" width="49%"/> <img src="docs/previews/full-page-2.png" alt="Full Page 2" width="49%"/>
+<img src="docs/previews/full-page-3.png" alt="Full Page 3" width="49%"/>
 
 ### Short Version
 
 Including selected entries
 
 <img src="docs/previews/short-page-1.png" alt="Short Page 1" width="49%"/> <img src="docs/previews/short-page-2.png" alt="Short Page 2" width="49%"/>
+<img src="docs/previews/short-page-3.png" alt="Short Page 3" width="49%"/>
 
 ## Versions reference
 
 To create a new CV version, create a new YAML file in `versions/`.
-The structure of the file is:
+Versions are structured as a list of **parts** under the top-level `parts:` key.
+Each part defines a page layout type, its sidebar (if applicable), and the sections to render in the body.
 
 ```yaml
-sections:
-  - name: Section                  # Section name
-    type: section                  # Section type
-    data: education.yml            # File containing data for this section (in `data/sections/`)
-    title_field: title             # Field in section items to use as the title
-    institution_field: institution # Field in section items to use as the institution
-    location_field: location       # Field in section items to use as the location
-    date_field: date               # Field in section items to use as the date
-    from_field: from               # Field in section items to use as the from date
-    to_field: to                   # Field in section items to use as the to date
-    desc_field: description        # Field in section items to use as the description
-    url_fields: [field1, field2]   # Fields to format as URLs (default: None)
-    github_stats: false            # Fetch and display GitHub stars and forks for entries (default: false)
-    entries: all                   # Which entries to include in the section
+parts:
+  - type: standard              # Full sidebar layout (default if type is omitted)
+    sidebar: sidebar.yml        # Sidebar file (in `data/`); omit or ~ for empty sidebar
+    sections:
+      - name: Section           # Section name
+        type: section           # Section type (see below)
+        data: education.yml     # File in `data/sections/`
+        title_field: title
+        institution_field: institution
+        location_field: location
+        date_field: date
+        from_field: from
+        to_field: to
+        desc_field: description
+        url_fields: [field1, field2]
+        github_stats: false     # Fetch and display GitHub stars/forks for entries
+        entries: all            # "all" or a list of entry IDs
+
+  - type: thin                  # Thin sidebar layout
+    label: "Bibliography"       # Optional rotated label in the thin sidebar
+    metrics:                    # Optional metrics displayed in the thin sidebar
+      - label: "h-index"
+        value: "18"
+      - label: "Citations"
+        value: "280"
+    sections:
+      - name: Publications
+        type: publications
+        data: publications.yml
+        highlight_authors: ["Last, First"]
+        max_authors: 5
+        entries: all
 ```
 
-**Notes:**
+**Part types:**
 
-- `type` can be `"publications"` for rendering publication references or `"new-page"` to start a new page.
-  Anything else is ignored and a standard section is rendered.
-- The `*_field` fields map fields in the data YAML to fields used by the Neat CV template
-- `entries` can contain a list of entry IDs to include selected entries:
+- `standard` — full-width sidebar layout (`cv-with-side`). Set `sidebar` to a filename (in `data/`) to populate the sidebar.
+- `thin` —  thin sidebar layout (`cv-thin-side`). Supports optional `label` and `metrics`.
 
-    ```yaml
-        entries:
-        - entry1
-        - entry2
-    ```
+Parts are separated by automatic page breaks. The first part does not get a page break.
+
+**Section types** (within a part's `sections:` list):
+
+- `"publications"` — renders a publication list from Hayagriva YAML
+- `"reference"` — renders reference entries using `reference()` (name/role instead of title/institution)
+- `"new-page"` — inserts a column break within the current part
+- Anything else is treated as a standard `entry()` section
+
+The `*_field` fields map fields in the data YAML to fields used by the Neat CV template.
+`entries` can be `"all"` or a list of entry IDs:
+
+```yaml
+    entries:
+      - entry1
+      - entry2
+```
 
 Publications sections can have the following additional fields:
 
 ```yaml
     highlight_authors: ["Last, First"]  # Names to highlight in author lists
+    max_authors: 5                      # Max authors shown before "et al" (default: 10)
     joint_authorship: NULL              # Symbol to indicate joint authorship, e.g. "\*"
+```
+
+Individual publication entries can include a `corresponding-author` field to mark the
+corresponding author with a dagger (†):
+
+```yaml
+mypub2024:
+  type: article
+  title: "My Paper Title"
+  author:
+    - Smith, John
+    - Doe, Jane
+  corresponding-author: Smith, John
+  date: 2024
+  ...
+```
+
+### Reference sections (`reference`)
+
+Use `type: reference` for sections listing people (supervisors, collaborators, etc.).
+This uses the `reference()` function from Neat CV instead of the generic `entry()`.
+The field mappings work the same way:
+
+```yaml
+  - name: References
+    type: reference
+    data: references.yml
+    title_field: name       # maps to the "name" parameter
+    institution_field: role # maps to the "role" parameter
+    desc_field: details
+    entries: all
 ```
 
 ## GitHub repository stats
