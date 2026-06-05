@@ -24,6 +24,7 @@ suppressPackageStartupMessages({
 ```{r}
 #| label: setup
 
+locale <- Sys.setlocale("LC_CTYPE", "UTF-8")
 workspace_dir <- Sys.getenv("WORKSPACE_DIR", ".")
 source(file.path(workspace_dir, "scripts/github-stats.R"))
 meta <- read_yaml(file.path(workspace_dir, "data/meta.yml"))
@@ -38,9 +39,10 @@ version_config <- read_yaml(version_file)
 
 cat("```{=typst}\n")
 cat(
-  "#import \"@preview/neat-cv:0.7.0\": (",
-  "  contact-info, cv, email-link, entry, item-pills, item-with-level,",
-  "  publications, side, social-links,",
+  "#import \"@preview/neat-cv:1.1.0\": (",
+  "  contact-info, cv, cv-thin-side, cv-with-side, email-link, entry,",
+  "  item-pills, item-with-level, publications, reference, social-links,",
+  "  thin-label, thin-metrics,",
   ")\n",
   sep = "\n"
 )
@@ -121,13 +123,9 @@ cat("```\n")
 ```
 
 ```{r}
-#| label: sidebar
-#| output: asis
+#| label: generate_sidebar_content
 
-sidebar <- read_yaml(file.path(workspace_dir, "data/sidebar.yml"))
-if (!is.null(sidebar)) {
-  cat("```{=typst}\n")
-  cat("#side[\n")
+generate_sidebar_content <- function(sidebar) {
   walk(sidebar, function(section) {
     if (section$type == "new-page") {
       cat("  #colbreak()\n\n")
@@ -187,9 +185,6 @@ if (!is.null(sidebar)) {
       cat("  ))\n")
     }
   })
-
-  cat("]\n\n")
-  cat("```\n\n")
 }
 ```
 
@@ -279,7 +274,8 @@ generate_section_content <- function(section_data, section_name,
                                      location_field = NULL,
                                      date_field = NULL,
                                      from_field = NULL, to_field = NULL,
-                                     desc_field = NULL) {
+                                     desc_field = NULL,
+                                     use_reference = FALSE) {
   title_field <- title_field %||% "title"
   institution_field <- institution_field %||% "institution"
   location_field <- location_field %||% "location"
@@ -293,10 +289,12 @@ generate_section_content <- function(section_data, section_name,
 
   # Get first entry with time period
   prefix_entry <- NULL
-  for (i in seq_along(section_data)) {
-    if (!is.null(section_data[[i]]$to)) {
-      prefix_entry <- section_data[[i]]
-      break
+  if (!use_reference) {
+    for (i in seq_along(section_data)) {
+      if (!is.null(section_data[[i]]$to)) {
+        prefix_entry <- section_data[[i]]
+        break
+      }
     }
   }
 
@@ -305,24 +303,6 @@ generate_section_content <- function(section_data, section_name,
       glue("{trimws(entry[[desc_field]])}")
     } else {
       ""
-    }
-
-    if (!is.null(entry[[date_field]])) {
-      date <- glue::glue("{entry[[date_field]]}")
-    } else if (!is.null(entry[[from_field]])) {
-      if (is.null(entry[[to_field]])) {
-        date <- glue::glue("{entry[[from_field]]}")
-      } else {
-        if (identical(entry, prefix_entry)) {
-          date <- glue(
-            "_From_ {entry[[from_field]]}\n\n_to_ {entry[[to_field]]}"
-          )
-        } else {
-          date <- glue("{entry[[from_field]]}\n\n{entry[[to_field]]}")
-        }
-      }
-    } else {
-      date <- NULL
     }
 
     title <- ifelse(
@@ -340,18 +320,49 @@ generate_section_content <- function(section_data, section_name,
       "",
       entry[[location_field]]
     )
-    date <- ifelse(is.null(date), "", date)
 
-    glue::glue(
-      "#entry(
-        title: [{title}],
-        institution: [{institution}],
-        location: [{location}],
-        date: [{date}],
-        [{desc}],
-      )"
-    ) |>
-      cat("\n\n")
+    if (use_reference) {
+      glue::glue(
+        "#reference(
+          name: [{title}],
+          role: [{institution}],
+          location: [{location}],
+          [{desc}],
+        )"
+      ) |>
+        cat("\n\n")
+    } else {
+      if (!is.null(entry[[date_field]])) {
+        date <- glue::glue("{entry[[date_field]]}")
+      } else if (!is.null(entry[[from_field]])) {
+        if (is.null(entry[[to_field]])) {
+          date <- glue::glue("{entry[[from_field]]}")
+        } else {
+          if (identical(entry, prefix_entry)) {
+            date <- glue(
+              "_From_ {entry[[from_field]]}\n\n_to_ {entry[[to_field]]}"
+            )
+          } else {
+            date <- glue("{entry[[from_field]]}\n\n{entry[[to_field]]}")
+          }
+        }
+      } else {
+        date <- NULL
+      }
+
+      date <- ifelse(is.null(date), "", date)
+
+      glue::glue(
+        "#entry(
+          title: [{title}],
+          institution: [{institution}],
+          location: [{location}],
+          date: [{date}],
+          [{desc}],
+        )"
+      ) |>
+        cat("\n\n")
+    }
   })
 
   cat("```\n")
@@ -391,10 +402,7 @@ generate_publications <- function(section_config) {
     # Filter by IDs
     publications <- list()
     for (key in names(publications_raw)) {
-      if (
-        !is.null(publications_raw[[key]]$id) &&
-          publications_raw[[key]]$id %in% pub_ids
-      ) {
+      if (key %in% pub_ids) {
         publications[[key]] <- publications_raw[[key]]
         # Remove the 'id' field as it's not part of neat-cv format
         publications[[key]]$id <- NULL
@@ -425,10 +433,12 @@ generate_publications <- function(section_config) {
     highlight_authors_str <- glue_collapse(
       double_quote(highlight_authors), ", "
     )
+    max_authors <- section_config$max_authors %||% 10
     glue(
       "#publications(
         yaml(\"{temp_pub_file}\"),
-        highlight-authors: ({highlight_authors_str})
+        highlight-authors: ({highlight_authors_str}),
+        max-authors: {max_authors}
       )"
     ) |>
       cat("\n\n")
@@ -451,6 +461,86 @@ generate_new_page <- function() {
   cat("```{=typst}\n")
   cat("#colbreak()\n\n")
   cat("```\n\n")
+}
+```
+
+```{r}
+#| label: generate_standard_part
+
+generate_standard_part <- function(part_config, is_first = FALSE) {
+  sidebar <- if (!is.null(part_config$sidebar)) {
+    read_yaml(file.path(workspace_dir, "data", part_config$sidebar))
+  } else {
+    NULL
+  }
+
+  cat("```{=typst}\n")
+  if (!is_first) cat("#pagebreak()\n\n")
+  cat("#cv-with-side[\n\n")
+  if (!is.null(sidebar)) {
+    generate_sidebar_content(sidebar)
+  }
+  cat("][\n\n")
+  cat("```\n\n")
+
+  sections <- part_config$sections %||% list()
+  for (section in sections) {
+    generate_section(section)
+  }
+
+  cat("```{=typst}\n")
+  cat("]\n")
+  cat("```\n\n")
+}
+```
+
+```{r}
+#| label: generate_thin_part
+
+generate_thin_part <- function(part_config, is_first = FALSE) {
+  cat("```{=typst}\n")
+  if (!is_first) cat("#pagebreak()\n\n")
+  cat("#cv-thin-side[\n")
+
+  if (!is.null(part_config$label)) {
+    glue('  #thin-label("{part_config$label}")') |> cat("\n")
+  }
+
+  if (!is.null(part_config$metrics) && length(part_config$metrics) > 0) {
+    if (!is.null(part_config$label)) {
+      cat("  #v(1em)\n")
+    }
+    metrics_str <- map(part_config$metrics, function(m) {
+      glue('(label: "{m$label}", value: "{m$value}")')
+    }) |>
+      glue_collapse(",\n    ")
+    glue("  #thin-metrics((\n    {metrics_str}\n  ))") |> cat("\n")
+  }
+
+  cat("][\n\n")
+  cat("```\n\n")
+
+  sections <- part_config$sections %||% list()
+  for (section in sections) {
+    generate_section(section)
+  }
+
+  cat("```{=typst}\n")
+  cat("]\n")
+  cat("```\n\n")
+}
+```
+
+```{r}
+#| label: generate_part
+
+generate_part <- function(part_config, is_first = FALSE) {
+  type <- part_config$type %||% "standard"
+  if (type == "standard") {
+    generate_standard_part(part_config, is_first)
+  } else if (type == "thin") {
+    generate_thin_part(part_config, is_first)
+  }
 }
 ```
 
@@ -495,6 +585,9 @@ generate_section <- function(section_config) {
     return(invisible())
   }
 
+  use_reference <- !is.null(section_config$type) &&
+    section_config$type == "reference"
+
   section_data <- load_section_items(
     filename = section_config$data,
     entries = section_config$entries,
@@ -521,28 +614,27 @@ generate_section <- function(section_config) {
     date_field = section_config$date_field,
     from_field = section_config$from_field,
     to_field = section_config$to_field,
-    desc_field = section_config$desc_field
+    desc_field = section_config$desc_field,
+    use_reference = use_reference
   )
 }
 ```
 
 ```{r}
-#| label: generate-section-chunks
+#| label: generate-part-chunks
 #| results: hide
 
-sections <- version_config$sections
-names(sections) <- map_chr(
-  seq_along(sections), \(.i) sections[[.i]]$name %||% paste0("UNNNAMED", .i)
-)
-src_list <- purrr::map(names(sections), function(.section_name) {
-  src <- c(
-    "```{r section-<<.section_name>>, results='asis'}",
-    "generate_section(sections[['<<.section_name>>']])",
+parts <- version_config$parts
+src_list <- purrr::map(seq_along(parts), function(.i) {
+  c(
+    paste0("```{r part-", .i, ", results='asis'}"),
+    paste0(
+      "generate_part(version_config$parts[[", .i, "]], is_first = ",
+      .i == 1L, ")"
+    ),
     "```",
     ""
   )
-
-  knitr::knit_expand(text = src, delim = c("<<", ">>"))
 })
 out <- knitr::knit_child(text = unlist(src_list), options = list(cache = FALSE))
 ```
