@@ -11,6 +11,18 @@
     - Provided scientific mentorship to aspiring inventors and students.
     - Published theoretical work on paradoxes, causality, and energy transfer.
 
+- id: lead-physicist
+  position: Lead Research Physicist
+  employer: Pacific Science Institute
+  location: San Francisco, CA, USA
+  from: 1955
+  to: 1972
+  details: |
+    - Led a team of six researchers investigating applied electromagnetism and
+      high-energy particle interactions.
+    - Designed experimental apparatus for controlled plasma discharge studies.
+    - Co-authored seven peer-reviewed articles on electromagnetic field theory.
+
 - id: educator
   position: Science Educator & Public Speaker
   employer: Various Institutions

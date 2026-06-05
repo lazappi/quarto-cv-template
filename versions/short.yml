@@ -1,48 +1,53 @@
-sections:
-  - name: Education
-    data: education.yml
-    title_field: degree
-    desc_field: details
-    entries:
-      - phd
-  - name: Professional Experience
-    data: professional.yml
-    title_field: position
-    institution_field: employer
-    desc_field: details
-    entries:
-      - inventor
-  - name: Academic Experience
-    data: academic.yml
-    title_field: position
-    institution_field: employer
-    desc_field: details
-    entries:
-      - visiting-professor
-  - name: Grants and Awards
-    data: awards.yml
-    institution_field: issuer
-    date_field: year
-    entries:
-      - lifetime-achievement
-  - type: new-page
-  - name: Talks
-    data: talks.yml
-    institution_field: event
-    desc_field: details
-    entries:
-      - inventors-annual-meeting
-  - name: Publications
-    type: publications
-    data: publications.yml
-    highlight_authors: ["Brown, Emmett", "Brown, Emmett Lathrop"]
-    joint_authorship: NULL # Symbol to indicate joint authorship, e.g. "\*"
-    entries:
-      - brown1990ethics
-  - name: References
-    data: references.yml
-    title_field: name
-    institution_field: position
-    desc_field: details
-    entries:
-      - marty-mcfly
+parts:
+  - type: standard
+    sidebar: sidebar.yml
+    sections:
+      - name: Education
+        data: education.yml
+        title_field: degree
+        desc_field: details
+        entries:
+          - bsc
+          - phd
+      - name: Professional Experience
+        data: professional.yml
+        title_field: position
+        institution_field: employer
+        desc_field: details
+        entries:
+          - inventor
+          - lead-physicist
+      - name: Academic Experience
+        data: academic.yml
+        title_field: position
+        institution_field: employer
+        desc_field: details
+        entries:
+          - visiting-professor
+      - type: new-page
+      - name: Grants and Awards
+        data: awards.yml
+        institution_field: issuer
+        date_field: year
+        entries:
+          - nsf-grant
+          - achievement-award
+      - name: References
+        type: reference
+        data: references.yml
+        title_field: name
+        institution_field: position
+        desc_field: details
+        entries: all
+  - type: thin
+    label: Bibliography
+    sections:
+      - name: Publications
+        type: publications
+        data: publications.yml
+        highlight_authors: ["Brown, Emmett", "Brown, Emmett Lathrop"]
+        max_authors: 5
+        joint_authorship: NULL # Symbol to indicate joint authorship, e.g. "\*"
+        entries:
+          - brown1985flux
+          - brown1986paradox

@@ -16,5 +16,19 @@
   title: Hill Valley Science Achievement Award
   issuer: Hill Valley Science Society
   location: Hill Valley, CA, USA
-  year: 1986
+  year: 1985
   description: Awarded for outstanding contributions to science and innovation in the community.
+
+- id: nsf-grant
+  title: National Science Foundation Research Grant
+  issuer: National Science Foundation
+  location: Washington, D.C., USA
+  year: 1979
+  description: Awarded \$340,000 for research into practical applications of electromagnetic flux in high-energy temporal systems.
+
+- id: caltech-alumni
+  title: CalTech Outstanding Alumni Award
+  issuer: California Institute of Technology
+  location: Pasadena, CA, USA
+  year: 1972
+  description: Recognized for exceptional contributions to applied physics and interdisciplinary innovation.

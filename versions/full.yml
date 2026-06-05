@@ -1,42 +1,57 @@
-sections:
-  - name: Education
-    data: education.yml
-    title_field: degree
-    desc_field: details
-    entries: all
-  - name: Professional Experience
-    data: professional.yml
-    title_field: position
-    institution_field: employer
-    desc_field: details
-    entries: all
-  - name: Academic Experience
-    data: academic.yml
-    title_field: position
-    institution_field: employer
-    desc_field: details
-    github_stats: true
-    entries: all
-  - name: Grants and Awards
-    data: awards.yml
-    institution_field: issuer
-    date_field: year
-    entries: all
-  - type: new-page
-  - name: Talks
-    data: talks.yml
-    institution_field: event
-    desc_field: details
-    entries: all
-  - name: Publications
-    type: publications
-    data: publications.yml
-    highlight_authors: ["Brown, Emmett", "Brown, Emmett Lathrop"]
-    joint_authorship: NULL # Symbol to indicate joint authorship, e.g. "\*"
-    entries: all
-  - name: References
-    data: references.yml
-    title_field: name
-    institution_field: position
-    desc_field: details
-    entries: all
+parts:
+  - type: standard
+    sidebar: sidebar.yml
+    sections:
+      - name: Education
+        data: education.yml
+        title_field: degree
+        desc_field: details
+        entries: all
+      - name: Professional Experience
+        data: professional.yml
+        title_field: position
+        institution_field: employer
+        desc_field: details
+        entries: all
+      - name: Academic Experience
+        data: academic.yml
+        title_field: position
+        institution_field: employer
+        desc_field: details
+        github_stats: true
+        entries: all
+      - type: new-page
+      - name: Grants and Awards
+        data: awards.yml
+        institution_field: issuer
+        date_field: year
+        entries: all
+      - name: Talks
+        data: talks.yml
+        institution_field: event
+        desc_field: details
+        entries: all
+      - name: References
+        type: reference
+        data: references.yml
+        title_field: name
+        institution_field: position
+        desc_field: details
+        entries: all
+  - type: thin
+    label: Bibliography
+    metrics:
+      - label: i10-index
+        value: "12"
+      - label: h-index
+        value: "18"
+      - label: Citations
+        value: "423"
+    sections:
+      - name: Publications
+        type: publications
+        data: publications.yml
+        highlight_authors: ["Brown, Emmett", "Brown, Emmett Lathrop"]
+        max_authors: 5
+        joint_authorship: NULL # Symbol to indicate joint authorship, e.g. "\*"
+        entries: all
