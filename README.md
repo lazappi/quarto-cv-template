@@ -279,7 +279,15 @@ sections:
 ```
 
 When rendered, the field value is replaced with the formatted value including GitHub stats.
-For example, with this format the title becomes **My package (1234 stars, 56 forks)**.
+The following placeholders can be used in the `format:` field:
+
+- `{field}`: The original field value
+- `{org}`: The GitHub organisation
+- `{repo}`: The GitHub repository name
+- `{stars}`: The number of GitHub stars
+- `{forks}`: The number of GitHub forks
+
+For example, with the example format above, the title becomes **My package (1234 stars, 56 forks)**.
 
 **Notes:**
 

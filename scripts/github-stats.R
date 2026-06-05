@@ -19,7 +19,12 @@ fetch_github_stats <- function(repo) {
     {
       url <- paste0("https://api.github.com/repos/", repo)
       data <- jsonlite::fromJSON(url)
-      list(stars = data$stargazers_count, forks = data$forks_count)
+      list(
+        org = data$owner$login,
+        repo = data$name,
+        stars = data$stargazers_count,
+        forks = data$forks_count
+      )
     },
     error = function(e) {
       warning(
@@ -27,7 +32,7 @@ fetch_github_stats <- function(repo) {
         conditionMessage(e),
         call. = FALSE
       )
-      list(stars = "X", forks = "Y")
+      list(org = "organisation", repo = "repository", stars = "X", forks = "Y")
     }
   )
 }
@@ -61,6 +66,8 @@ add_github_stats <- function(entries, field = "title", format = "{field} ({stars
         entry[[field]] <- glue::glue(
           format,
           field = entry[[field]] %||% "",
+          org = stats$org,
+          repo = stats$repo,
           stars = stats$stars,
           forks = stats$forks
         )
