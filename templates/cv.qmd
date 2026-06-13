@@ -358,7 +358,7 @@ generate_section_content <- function(section_data, section_name,
         ifelse(institution != "", glue("  institution: [{institution}],"), ""),
         ifelse(location != "", glue("  location: [{location}],"), ""),
         ifelse(date != "", glue("  date: [{date}],"), ""),
-        ifelse(desc != "", glue("  [{desc}],"), ""),
+        "  [{desc}],",
         ")"
       )
 
