@@ -98,7 +98,7 @@ for (part in version_config$parts) {
           if (!is.null(item$subtitle)) {
             md_lines <- c(
               md_lines,
-              paste0("- **", item$name, "** (", item$subtitle, ")")
+              paste0("- **", item$name, "** (", item$level, ", ", item$subtitle, ")")
             )
           } else {
             md_lines <- c(md_lines, paste0("- **", item$name, "**"))
@@ -209,6 +209,7 @@ for (part in version_config$parts) {
             date <- from_date
           }
         }
+        date <- gsub("\n", " ", date) # Replace newlines in date with space
 
         entry_header <- ""
         if (title != "") entry_header <- paste0("**", title, "**")
@@ -233,7 +234,7 @@ for (part in version_config$parts) {
 
         desc <- entry[[section_config$desc_field %||% "description"]]
         if (!is.null(desc)) {
-          md_lines <- c(md_lines, trimws(desc))
+          md_lines <- c(md_lines, "\n", trimws(desc))
         }
 
         md_lines <- c(md_lines, "")
