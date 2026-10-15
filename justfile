@@ -12,11 +12,11 @@ render VERSION:
 [group("render")]
 render-all:
     @echo "Rendering all CV versions..."
-    @for version in versions/*.yml \
+    @for version in versions/*.yml; \
     do \
-        name=$(basename "$version" .yml) \
-        echo "→ Rendering $name..." \
-        ./scripts/render.sh "$name" \
+        name=$(basename "$version" .yml); \
+        echo "→ Rendering $name..."; \
+        ./scripts/render.sh "$name"; \
     done
     @echo "✓ All versions rendered"
 
