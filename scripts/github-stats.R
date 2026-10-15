@@ -1,15 +1,20 @@
 #!/usr/bin/env Rscript
 # Utility functions for fetching GitHub repository statistics
 
-if (!requireNamespace("jsonlite", quietly = TRUE)) {
-  stop(
-    "Package 'jsonlite' is required to fetch GitHub stats. ",
-    "Install it with: install.packages('jsonlite')",
-    call. = FALSE
-  )
+for (pkg in c("jsonlite", "curl")) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    stop(
+      "Package '", pkg, "' is required to fetch GitHub stats. ",
+      "Install it with: install.packages('", pkg, "')",
+      call. = FALSE
+    )
+  }
 }
 
 #' Fetch GitHub repository statistics (stars and forks)
+#'
+#' If the `GITHUB_TOKEN` environment variable is set it is used to authenticate
+#' requests, which raises the API rate limit (60 requests per hour otherwise).
 #'
 #' @param repo Repository in "owner/repo" format
 #'
@@ -18,7 +23,16 @@ fetch_github_stats <- function(repo) {
   tryCatch(
     {
       url <- paste0("https://api.github.com/repos/", repo)
-      data <- jsonlite::fromJSON(url)
+      token <- Sys.getenv("GITHUB_TOKEN")
+      handle <- curl::new_handle()
+      if (nzchar(token)) {
+        curl::handle_setheaders(handle, Authorization = paste("token", token))
+      }
+      response <- curl::curl_fetch_memory(url, handle = handle)
+      data <- jsonlite::fromJSON(rawToChar(response$content))
+      if (response$status_code != 200) {
+        stop("HTTP ", response$status_code, ": ", data$message, call. = FALSE)
+      }
       list(
         org = data$owner$login,
         repo = data$name,

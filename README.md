@@ -43,7 +43,8 @@ just render short
   - [**{yaml}**](https://yaml.r-lib.org/)
   - [**{glue}**](https://glue.tidyverse.org/)
   - [**{purrr}**](https://purrr.tidyverse.org/)
-  - [**{jsonlite}**](https://jeroen.r-universe.dev/jsonlite) *(required for GitHub stats)*
+  - [**{jsonlite}**](https://jeroen.r-universe.dev/jsonlite) _(required for GitHub stats)_
+  - [**{curl}**](https://jeroen.r-universe.dev/curl) _(required for GitHub stats)_
 - [`just`](https://just.systems/)
 
 **Fonts:**
@@ -294,7 +295,8 @@ For example, with the example format above, the title becomes **My package (1234
 
 **Notes:**
 
-- Stats are fetched from the [GitHub REST API](https://docs.github.com/en/rest/repos/repos#get-a-repository) at render time using unauthenticated requests
+- Stats are fetched from the [GitHub REST API](https://docs.github.com/en/rest/repos/repos#get-a-repository) at render time
+  - Requests are unauthenticated unless the `GITHUB_TOKEN` environment variable is set, which raises the rate limit from 60 requests per hour
 - Entries without a `github` field are not affected
 - If a request fails (e.g., due to rate limiting or a missing repository), a warning is issued and the title is left unchanged
-- Requires the **{jsonlite}** R package is required
+- Requires the **{jsonlite}** and **{curl}** R packages
