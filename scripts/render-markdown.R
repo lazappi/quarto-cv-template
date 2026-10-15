@@ -209,7 +209,7 @@ for (part in version_config$parts) {
             date <- from_date
           }
         }
-        date <- gsub("\n", " ", date) # Replace newlines in date with space
+        date <- gsub("\n", " ", date %||% "") # Replace newlines in date with space
 
         entry_header <- ""
         if (title != "") entry_header <- paste0("**", title, "**")
@@ -224,7 +224,7 @@ for (part in version_config$parts) {
             entry_header <- paste0("*", inst_str, "*")
           }
         }
-        if (!is.null(date) && date != "") {
+        if (date != "") {
           entry_header <- paste0(entry_header, " (", date, ")")
         }
 
