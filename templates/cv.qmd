@@ -39,7 +39,7 @@ version_config <- read_yaml(version_file)
 
 cat("```{=typst}\n")
 cat(
-  "#import \"@preview/neat-cv:1.1.0\": (",
+  "#import \"@preview/neat-cv:1.2.0\": (",
   "  contact-info, cv, cv-thin-side, cv-with-side, email-link, entry,",
   "  item-pills, item-with-level, publications, reference, social-links,",
   "  thin-label, thin-metrics,",
@@ -77,6 +77,18 @@ if (is.null(meta$custom_links) || length(meta$custom_links) == 0) {
   ) |> glue_collapse(",\n")
 }
 
+# Only pass layout overrides that are set in the config
+layout_overrides <- config$layout_overrides[
+  !vapply(config$layout_overrides, is.null, logical(1))
+]
+layout_overrides_str <- glue_collapse(
+  glue("{gsub('_', '-', names(layout_overrides))}: {layout_overrides}"),
+  ", "
+)
+if (length(layout_overrides) == 0) {
+  layout_overrides_str <- ":"
+}
+
 # nolint start: commented_code_linter
 glue(
   "#show: cv.with(",
@@ -110,7 +122,7 @@ glue(
   "  body-font: ({body_font_str}),",
   "  body-font-size: {config$body_font_size},",
   '  paper-size: "{config$paper_size}",',
-  "  side-width: {config$side_width},",
+  "  layout-overrides: ({layout_overrides_str}),",
   '  gdpr: {ifelse(config$gdpr, "true", "false")},',
   # '  footer: "{config$footer}",',
   ")",
