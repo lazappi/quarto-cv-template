@@ -55,6 +55,9 @@ just render short
 
 Fonts can be set in `config.yml` but FontAwesome is always required for symbols.
 
+Layout dimensions can be adjusted using the optional `layout_overrides` map in `config.yml` (`side_width`, `header_padding`, `header_body_gap`, `page_margin_x` and `page_margin_y`).
+Unset keys use the Neat CV defaults.
+
 **Development:**
 
 - [`pre-commit`](https://pre-commit.com/)
@@ -69,7 +72,7 @@ Fonts can be set in `config.yml` but FontAwesome is always required for symbols.
 
 ```text
 .
-├── data/  
+├── data/
 │   ├── config.yml            # Document-level settings
 │   ├── meta.yml              # Personal metadata
 │   ├── sidebar.yml           # Sidebar content
