@@ -12,6 +12,11 @@ url_font:
   - Noto Sans Mono
 body_font_size: 10.5pt
 paper_size: a4
-side_width: 4cm
+layout_overrides:
+  side_width: 4cm
+  # header_padding: 0.5cm
+  # header_body_gap: 0.5cm
+  # page_margin_x: 1.5cm
+  # page_margin_y: 1.5cm
 gdpr: false
 # footer: Your footer
