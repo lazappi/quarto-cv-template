@@ -59,6 +59,10 @@ Fonts can be set in `config.yml` but FontAwesome is always required for symbols.
 Layout dimensions can be adjusted using the optional `layout_overrides` map in `config.yml` (`side_width`, `header_padding`, `header_body_gap`, `page_margin_x` and `page_margin_y`).
 Unset keys use the Neat CV defaults.
 
+Text alignment and hyphenation can be set with the optional `alignment_overrides` map in `config.yml`.
+Each of `sidebar` and `body` accepts `align` (`left`, `right` or `justify` for the sidebar, `left` or `justify` for the body) and `hyphenate` (`true` or `false`).
+Unset keys use the Neat CV defaults (justified text).
+
 **Development:**
 
 - [`pre-commit`](https://pre-commit.com/)

@@ -493,6 +493,33 @@ generate_new_page <- function() {
 ```{r}
 #| label: generate_standard_part
 
+# Optional text alignment and hyphenation (unset keys use the Neat CV defaults)
+text_rules <- function(align, hyphenate, allowed = c("left", "right", "justify")) {
+  c(
+    if (!is.null(align)) {
+      stopifnot(align %in% allowed)
+      c(
+        glue("#set par(justify: {tolower(align == 'justify')})"),
+        if (align != "justify") glue("#set align({align})")
+      )
+    },
+    if (!is.null(hyphenate)) {
+      glue("#set text(hyphenate: {tolower(hyphenate)})")
+    }
+  ) |>
+    paste(collapse = "\n")
+}
+sidebar_text_rules <- text_rules(
+  config$alignment_overrides$sidebar$align,
+  config$alignment_overrides$sidebar$hyphenate
+)
+# Right alignment is not supported by the body entry layouts
+body_text_rules <- text_rules(
+  config$alignment_overrides$body$align,
+  config$alignment_overrides$body$hyphenate,
+  allowed = c("left", "justify")
+)
+
 generate_standard_part <- function(part_config, is_first = FALSE) {
   sidebar <- if (!is.null(part_config$sidebar)) {
     read_yaml(file.path(workspace_dir, "data", part_config$sidebar))
@@ -503,10 +530,12 @@ generate_standard_part <- function(part_config, is_first = FALSE) {
   cat("```{=typst}\n")
   if (!is_first) cat("#pagebreak()\n\n")
   cat("#cv-with-side[\n\n")
+  cat(sidebar_text_rules, "\n\n")
   if (!is.null(sidebar)) {
     generate_sidebar_content(sidebar)
   }
   cat("][\n\n")
+  cat(body_text_rules, "\n\n")
   cat("```\n\n")
 
   sections <- part_config$sections %||% list()
@@ -544,6 +573,7 @@ generate_thin_part <- function(part_config, is_first = FALSE) {
   }
 
   cat("][\n\n")
+  cat(body_text_rules, "\n\n")
   cat("```\n\n")
 
   sections <- part_config$sections %||% list()
