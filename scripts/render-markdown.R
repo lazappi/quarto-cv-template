@@ -64,7 +64,7 @@ md_lines <- c(md_lines, "")
 
 # Sidebar  collect from first standard partsections
 for (part in version_config$parts) {
-  if (is.null(part$type) || part$type == "standard") {
+  if (is.null(part$type) || part$type %in% c("standard", "single")) {
     sidebar <- if (!is.null(part$sidebar)) {
       read_yaml(file.path(workspace_dir, "data", part$sidebar))
     } else {

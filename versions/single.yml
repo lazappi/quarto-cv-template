@@ -1,0 +1,33 @@
+parts:
+  - type: single
+    sidebar: sidebar.yml
+    sections:
+      - name: Education
+        data: education.yml
+        title_field: degree
+        desc_field: details
+        entries: all
+      - name: Professional Experience
+        data: professional.yml
+        title_field: position
+        institution_field: employer
+        desc_field: details
+        entries: all
+      - name: Academic Experience
+        data: academic.yml
+        title_field: position
+        institution_field: employer
+        desc_field: details
+        entries: all
+      - name: Grants and Awards
+        data: awards.yml
+        institution_field: issuer
+        date_field: year
+        entries: all
+      - name: References
+        type: reference
+        data: references.yml
+        title_field: name
+        institution_field: position
+        desc_field: details
+        entries: all

@@ -25,6 +25,7 @@ A flexible CV template powered by Quarto and Typst using the [Neat CV](https://g
 ```bash
 just render full
 just render short
+just render single
 ```
 
 3. Find outputs in:
@@ -33,6 +34,8 @@ just render short
 - `output/full.pdf`
 - `output/short.md`
 - `output/short.pdf`
+- `output/single.md`
+- `output/single.pdf`
 
 ## Prerequisites
 
@@ -158,6 +161,13 @@ Including selected entries
 <img src="docs/previews/short-page-1.png" alt="Short Page 1" width="49%"/> <img src="docs/previews/short-page-2.png" alt="Short Page 2" width="49%"/>
 <img src="docs/previews/short-page-3.png" alt="Short Page 3" width="49%"/>
 
+### Single Column Version
+
+Single column layout with the sidebar sections placed at the top of the body
+
+<img src="docs/previews/single-page-1.png" alt="Single Page 1" width="49%"/> <img src="docs/previews/single-page-2.png" alt="Single Page 2" width="49%"/>
+<img src="docs/previews/single-page-3.png" alt="Single Page 3" width="49%"/>
+
 ## Versions reference
 
 To create a new CV version, create a new YAML file in `versions/`.
@@ -201,6 +211,9 @@ parts:
 **Part types:**
 
 - `standard` — full-width sidebar layout (`cv-with-side`). Set `sidebar` to a filename (in `data/`) to populate the sidebar.
+- `single` — single column layout with no sidebar wrapper. If `sidebar` is set, its sections are rendered at the top of the body
+  - Some section types (`align-bottom`, `new-page`, `levels`) are not supported and the profile picture is not included
+  - Other sidebar section types are rendered but may not make sense in this layout
 - `thin` —  thin sidebar layout (`cv-thin-side`). Supports optional `label` and `metrics`.
 
 Parts are separated by automatic page breaks. The first part does not get a page break.

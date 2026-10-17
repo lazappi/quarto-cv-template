@@ -137,13 +137,19 @@ cat("```\n")
 ```{r}
 #| label: generate_sidebar_content
 
-generate_sidebar_content <- function(sidebar) {
+generate_sidebar_content <- function(sidebar, inline = FALSE) {
   walk(sidebar, function(section) {
+    # Level bars and page breaks only work in the sidebar layout
+    if (inline && section$type %in% c("levels", "new-page")) {
+      return(invisible())
+    }
+
     if (section$type == "new-page") {
       cat("  #colbreak()\n\n")
     }
 
-    if (section$type == "align-bottom") {
+    # Bottom alignment only makes sense in a sidebar
+    if (section$type == "align-bottom" && !inline) {
       cat("  #v(1fr)\n\n")
     }
 
@@ -550,6 +556,33 @@ generate_standard_part <- function(part_config, is_first = FALSE) {
 ```
 
 ```{r}
+#| label: generate_single_part
+
+# Single column layout: no sidebar wrapper, sidebar sections (if any) are
+# rendered at the top of the body
+generate_single_part <- function(part_config, is_first = FALSE) {
+  sidebar <- if (!is.null(part_config$sidebar)) {
+    read_yaml(file.path(workspace_dir, "data", part_config$sidebar))
+  } else {
+    NULL
+  }
+
+  cat("```{=typst}\n")
+  if (!is_first) cat("#pagebreak()\n\n")
+  cat(body_text_rules, "\n\n")
+  if (!is.null(sidebar)) {
+    generate_sidebar_content(sidebar, inline = TRUE)
+  }
+  cat("```\n\n")
+
+  sections <- part_config$sections %||% list()
+  for (section in sections) {
+    generate_section(section)
+  }
+}
+```
+
+```{r}
 #| label: generate_thin_part
 
 generate_thin_part <- function(part_config, is_first = FALSE) {
@@ -594,6 +627,8 @@ generate_part <- function(part_config, is_first = FALSE) {
   type <- part_config$type %||% "standard"
   if (type == "standard") {
     generate_standard_part(part_config, is_first)
+  } else if (type == "single") {
+    generate_single_part(part_config, is_first)
   } else if (type == "thin") {
     generate_thin_part(part_config, is_first)
   }
