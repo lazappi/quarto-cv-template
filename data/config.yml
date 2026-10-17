@@ -18,12 +18,12 @@ layout_overrides:
   # header_body_gap: 0.5cm
   # page_margin_x: 1.5cm
   # page_margin_y: 1.5cm
-# alignment_overrides:
-#   sidebar:
-#     align: justify  # left, right or justify
-#     hyphenate: true
-#   body:
-#     align: justify  # left or justify
-#     hyphenate: true
+alignment_overrides:
+  sidebar:
+    align: left  # left, right or justify
+    hyphenate: false
+  body:
+    align: left  # left or justify
+    hyphenate: false
 gdpr: false
 # footer: Your footer
