@@ -339,7 +339,7 @@ generate_section_content <- function(section_data, section_name,
           name: [{title}],
           role: [{institution}],
           location: [{location}],
-          [{desc}],
+          [\n{desc}\n],
         )"
       ) |>
         cat("\n\n")
@@ -370,7 +370,7 @@ generate_section_content <- function(section_data, section_name,
         ifelse(institution != "", glue("  institution: [{institution}],"), ""),
         ifelse(location != "", glue("  location: [{location}],"), ""),
         ifelse(date != "", glue("  date: [{date}],"), ""),
-        "  [{desc}],",
+        "  [\n{desc}\n],",
         ")"
       )
 
